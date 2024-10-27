@@ -1,23 +1,67 @@
--- --------------------------------------------------------
--- Host:                         localhost
--- Server version:               5.7.44 - MySQL Community Server (GPL)
--- Server OS:                    Linux
--- HeidiSQL Version:             12.0.0.6468
--- --------------------------------------------------------
 
-/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
-/*!40101 SET NAMES utf8 */;
-/*!50503 SET NAMES utf8mb4 */;
-/*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
-/*!40103 SET TIME_ZONE='+00:00' */;
-/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
-/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
-/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+-- Dumping structure for table sms_db.migration
+CREATE TABLE IF NOT EXISTS `migration` (
+  `version` varchar(180) NOT NULL,
+  `apply_time` int(11) DEFAULT NULL,
+  PRIMARY KEY (`version`)
+) ENGINE=InnoDB DEFAULT CHARSET=LATIN1;
 
+-- Dumping structure for table sms_db.user
+CREATE TABLE IF NOT EXISTS `user` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `username` varchar(25) NOT NULL,
+  `email` varchar(255) NOT NULL,
+  `password_hash` varchar(60) NOT NULL,
+  `auth_key` varchar(32) NOT NULL,
+  `confirmed_at` int(11) DEFAULT NULL,
+  `unconfirmed_email` varchar(255) DEFAULT NULL,
+  `blocked_at` int(11) DEFAULT NULL,
+  `registration_ip` varchar(45) DEFAULT NULL,
+  `created_at` int(11) NOT NULL,
+  `updated_at` int(11) NOT NULL,
+  `flags` int(11) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `user_unique_username` (`username`),
+  UNIQUE KEY `user_unique_email` (`email`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 
--- Dumping database structure for sms_db
-CREATE DATABASE IF NOT EXISTS `sms_db` /*!40100 DEFAULT CHARACTER SET latin1 */;
-USE `sms_db`;
+-- Dumping data for table sms_db.migration: ~0 rows (approximately)
+-- Dumping structure for table sms_db.profile
+CREATE TABLE IF NOT EXISTS `profile` (
+  `user_id` int(11) NOT NULL,
+  `name` varchar(255) DEFAULT NULL,
+  `public_email` varchar(255) DEFAULT NULL,
+  `gravatar_email` varchar(255) DEFAULT NULL,
+  `gravatar_id` varchar(32) DEFAULT NULL,
+  `location` varchar(255) DEFAULT NULL,
+  `website` varchar(255) DEFAULT NULL,
+  `bio` text,
+  PRIMARY KEY (`user_id`),
+  CONSTRAINT `fk_user_profile` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=UTF8;
+
+-- Dumping structure for table sms_db.social_account
+CREATE TABLE IF NOT EXISTS `social_account` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) DEFAULT NULL,
+  `provider` varchar(255) NOT NULL,
+  `client_id` varchar(255) NOT NULL,
+  `data` text,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `account_unique` (`provider`,`client_id`),
+  KEY `fk_user_account` (`user_id`),
+  CONSTRAINT `fk_user_account` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=UTF8;
+
+-- Dumping structure for table sms_db.token
+CREATE TABLE IF NOT EXISTS `token` (
+  `user_id` int(11) NOT NULL,
+  `code` varchar(32) NOT NULL,
+  `created_at` int(11) NOT NULL,
+  `type` smallint(6) NOT NULL,
+  UNIQUE KEY `token_unique` (`user_id`,`code`,`type`),
+  CONSTRAINT `fk_user_token` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- Dumping structure for table sms_db.course
 CREATE TABLE IF NOT EXISTS `course` (
@@ -29,6 +73,22 @@ CREATE TABLE IF NOT EXISTS `course` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- Dumping data for table sms_db.course: ~0 rows (approximately)
+-- Dumping structure for table sms_db.instructors
+CREATE TABLE IF NOT EXISTS `instructors` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `first_name` varchar(50) NOT NULL,
+  `middle_name` varchar(50) DEFAULT NULL,
+  `last_name` varchar(50) NOT NULL,
+  `suffix` varchar(50) DEFAULT NULL,
+  `gender` enum('Male','Female') NOT NULL,
+  `email` varchar(100) NOT NULL,
+  `phone` varchar(15) DEFAULT NULL,
+  `hire_date` date DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `email` (`email`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- Dumping data for table sms_db.instructors: ~0 rows (approximately)
 
 -- Dumping structure for table sms_db.departments
 CREATE TABLE IF NOT EXISTS `departments` (
@@ -38,7 +98,49 @@ CREATE TABLE IF NOT EXISTS `departments` (
   PRIMARY KEY (`id`),
   KEY `head_of_department` (`head_of_department`),
   CONSTRAINT `departments_ibfk_1` FOREIGN KEY (`head_of_department`) REFERENCES `instructors` (`id`) ON DELETE SET NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=LATIN1;
+
+CREATE TABLE IF NOT EXISTS `students` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `first_name` varchar(50) NOT NULL,
+  `middle_name` varchar(50) DEFAULT NULL,
+  `last_name` varchar(50) NOT NULL,
+  `suffix` varchar(10) DEFAULT NULL,
+  `gender` enum('Male','Female') NOT NULL,
+  `date_of_birth` date DEFAULT NULL,
+  `email` varchar(100) NOT NULL,
+  `phone` varchar(15) DEFAULT NULL,
+  `enrollment_date` date DEFAULT NULL,
+  `status` enum('active','inactive') NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `email` (`email`)
+) ENGINE=InnoDB DEFAULT CHARSET=LATIN1;
+
+-- Dumping structure for table sms_db.subject
+CREATE TABLE IF NOT EXISTS `subject` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `course_id` int(11) DEFAULT NULL,
+  `subject_name` varchar(100) NOT NULL,
+  `subject_code` varchar(10) NOT NULL,
+  `description` text,
+  `credits` int(11) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `course_code` (`subject_code`) USING BTREE,
+  KEY `FK_subject_course` (`course_id`),
+  CONSTRAINT `FK_subject_course` FOREIGN KEY (`course_id`) REFERENCES `course` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=LATIN1;
+
+-- Dumping structure for table sms_db.majors
+CREATE TABLE IF NOT EXISTS `majors` (
+  `id` int(11) NOT NULL,
+  `subject_id` int(11) NOT NULL,
+  `code` varchar(50) NOT NULL,
+  `description` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `FK__courses` (`subject_id`) USING BTREE,
+  CONSTRAINT `FK__courses` FOREIGN KEY (`subject_id`) REFERENCES `subject` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=LATIN1;
+
 
 -- Dumping data for table sms_db.departments: ~0 rows (approximately)
 
@@ -74,65 +176,6 @@ CREATE TABLE IF NOT EXISTS `grades` (
   CONSTRAINT `grades_ibfk_1` FOREIGN KEY (`enrollment_id`) REFERENCES `enrollments` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
--- Dumping data for table sms_db.grades: ~0 rows (approximately)
-
--- Dumping structure for table sms_db.instructors
-CREATE TABLE IF NOT EXISTS `instructors` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `first_name` varchar(50) NOT NULL,
-  `middle_name` varchar(50) DEFAULT NULL,
-  `last_name` varchar(50) NOT NULL,
-  `suffix` varchar(50) DEFAULT NULL,
-  `gender` enum('Male','Female') NOT NULL,
-  `email` varchar(100) NOT NULL,
-  `phone` varchar(15) DEFAULT NULL,
-  `hire_date` date DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `email` (`email`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
--- Dumping data for table sms_db.instructors: ~0 rows (approximately)
-
--- Dumping structure for table sms_db.majors
-CREATE TABLE IF NOT EXISTS `majors` (
-  `id` int(11) NOT NULL,
-  `subject_id` int(11) NOT NULL,
-  `code` varchar(50) NOT NULL,
-  `description` varchar(255) DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `FK__courses` (`subject_id`) USING BTREE,
-  CONSTRAINT `FK__courses` FOREIGN KEY (`subject_id`) REFERENCES `subject` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
--- Dumping data for table sms_db.majors: ~0 rows (approximately)
-
--- Dumping structure for table sms_db.migration
-CREATE TABLE IF NOT EXISTS `migration` (
-  `version` varchar(180) NOT NULL,
-  `apply_time` int(11) DEFAULT NULL,
-  PRIMARY KEY (`version`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
--- Dumping data for table sms_db.migration: ~0 rows (approximately)
-
--- Dumping structure for table sms_db.profile
-CREATE TABLE IF NOT EXISTS `profile` (
-  `user_id` int(11) NOT NULL,
-  `name` varchar(255) DEFAULT NULL,
-  `public_email` varchar(255) DEFAULT NULL,
-  `gravatar_email` varchar(255) DEFAULT NULL,
-  `gravatar_id` varchar(32) DEFAULT NULL,
-  `location` varchar(255) DEFAULT NULL,
-  `website` varchar(255) DEFAULT NULL,
-  `bio` text,
-  PRIMARY KEY (`user_id`),
-  CONSTRAINT `fk_user_profile` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
--- Dumping data for table sms_db.profile: ~0 rows (approximately)
-INSERT INTO `profile` (`user_id`, `name`, `public_email`, `gravatar_email`, `gravatar_id`, `location`, `website`, `bio`) VALUES
-	(1, '', '', 'admin@email.com', '59235f35e4763abb0b547bd093562f6e', '', '', '');
-
 -- Dumping structure for table sms_db.schedule
 CREATE TABLE IF NOT EXISTS `schedule` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -146,61 +189,8 @@ CREATE TABLE IF NOT EXISTS `schedule` (
   KEY `course_id` (`subject_id`) USING BTREE,
   CONSTRAINT `schedule_ibfk_1` FOREIGN KEY (`subject_id`) REFERENCES `subject` (`id`) ON DELETE CASCADE,
   CONSTRAINT `schedule_ibfk_2` FOREIGN KEY (`instructor_id`) REFERENCES `instructors` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=LATIN1;
 
--- Dumping data for table sms_db.schedule: ~0 rows (approximately)
-
--- Dumping structure for table sms_db.social_account
-CREATE TABLE IF NOT EXISTS `social_account` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `user_id` int(11) DEFAULT NULL,
-  `provider` varchar(255) NOT NULL,
-  `client_id` varchar(255) NOT NULL,
-  `data` text,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `account_unique` (`provider`,`client_id`),
-  KEY `fk_user_account` (`user_id`),
-  CONSTRAINT `fk_user_account` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
--- Dumping data for table sms_db.social_account: ~0 rows (approximately)
-
--- Dumping structure for table sms_db.students
-CREATE TABLE IF NOT EXISTS `students` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `first_name` varchar(50) NOT NULL,
-  `middle_name` varchar(50) DEFAULT NULL,
-  `last_name` varchar(50) NOT NULL,
-  `suffix` varchar(10) DEFAULT NULL,
-  `gender` enum('Male','Female') NOT NULL,
-  `date_of_birth` date DEFAULT NULL,
-  `email` varchar(100) NOT NULL,
-  `phone` varchar(15) DEFAULT NULL,
-  `enrollment_date` date DEFAULT NULL,
-  `status` enum('active','inactive') NOT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `email` (`email`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
--- Dumping data for table sms_db.students: ~0 rows (approximately)
-
--- Dumping structure for table sms_db.subject
-CREATE TABLE IF NOT EXISTS `subject` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `course_id` int(11) DEFAULT NULL,
-  `subject_name` varchar(100) NOT NULL,
-  `subject_code` varchar(10) NOT NULL,
-  `description` text,
-  `credits` int(11) NOT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `course_code` (`subject_code`) USING BTREE,
-  KEY `FK_subject_course` (`course_id`),
-  CONSTRAINT `FK_subject_course` FOREIGN KEY (`course_id`) REFERENCES `course` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
--- Dumping data for table sms_db.subject: ~0 rows (approximately)
-
--- Dumping structure for table sms_db.subject_enrollment
 CREATE TABLE IF NOT EXISTS `subject_enrollment` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `student_id` int(11) NOT NULL DEFAULT '0',
@@ -214,7 +204,13 @@ CREATE TABLE IF NOT EXISTS `subject_enrollment` (
   KEY `FK__subject` (`subject_id`),
   CONSTRAINT `FK__students` FOREIGN KEY (`student_id`) REFERENCES `students` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `FK__subject` FOREIGN KEY (`subject_id`) REFERENCES `subject` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=LATIN1;
+
+-- Dumping data for table sms_db.profile: ~0 rows (approximately)
+INSERT INTO `profile` (`user_id`, `name`, `public_email`, `gravatar_email`, `gravatar_id`, `location`, `website`, `bio`) VALUES
+	(1, '', '', 'admin@email.com', '59235f35e4763abb0b547bd093562f6e', '', '', '');
+
+
 
 -- Dumping data for table sms_db.subject_enrollment: ~0 rows (approximately)
 
@@ -232,38 +228,13 @@ CREATE TABLE IF NOT EXISTS `subject_instructors` (
 
 -- Dumping data for table sms_db.subject_instructors: ~0 rows (approximately)
 
--- Dumping structure for table sms_db.token
-CREATE TABLE IF NOT EXISTS `token` (
-  `user_id` int(11) NOT NULL,
-  `code` varchar(32) NOT NULL,
-  `created_at` int(11) NOT NULL,
-  `type` smallint(6) NOT NULL,
-  UNIQUE KEY `token_unique` (`user_id`,`code`,`type`),
-  CONSTRAINT `fk_user_token` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 
 -- Dumping data for table sms_db.token: ~0 rows (approximately)
 INSERT INTO `token` (`user_id`, `code`, `created_at`, `type`) VALUES
 	(1, 'ma8bvWEoOxim-TziISSiOA-cq_zSC00A', 1728552068, 0);
 
--- Dumping structure for table sms_db.user
-CREATE TABLE IF NOT EXISTS `user` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `username` varchar(25) NOT NULL,
-  `email` varchar(255) NOT NULL,
-  `password_hash` varchar(60) NOT NULL,
-  `auth_key` varchar(32) NOT NULL,
-  `confirmed_at` int(11) DEFAULT NULL,
-  `unconfirmed_email` varchar(255) DEFAULT NULL,
-  `blocked_at` int(11) DEFAULT NULL,
-  `registration_ip` varchar(45) DEFAULT NULL,
-  `created_at` int(11) NOT NULL,
-  `updated_at` int(11) NOT NULL,
-  `flags` int(11) NOT NULL DEFAULT '0',
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `user_unique_username` (`username`),
-  UNIQUE KEY `user_unique_email` (`email`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+
 
 -- Dumping data for table sms_db.user: ~0 rows (approximately)
 INSERT INTO `user` (`id`, `username`, `email`, `password_hash`, `auth_key`, `confirmed_at`, `unconfirmed_email`, `blocked_at`, `registration_ip`, `created_at`, `updated_at`, `flags`) VALUES

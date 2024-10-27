@@ -38,8 +38,14 @@ $this->params['breadcrumbs'][] = $this->title;
             //'date_of_birth',
             //'email:email',
             //'phone',
-            'enrollment_date',
-            'status',
+            'enrollment_date:date',
+            [
+                'attribute' => 'status',
+                'format' => 'raw',
+                'value' => function($model){
+                    return $model->status === 'active' ? '<span class="badge badge-success">'.strtoupper($model->status).'</span>' : '<span class="badge badge-secondary">'.strtoupper($model->status).'</span>';
+                }
+            ],
             [
                 'class' => ActionColumn::className(),
                 'urlCreator' => function ($action, Students $model, $key, $index, $column) {

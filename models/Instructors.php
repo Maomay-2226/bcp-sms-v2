@@ -73,7 +73,7 @@ class Instructors extends \yii\db\ActiveRecord
 
     public function getFullname()
     {
-        return $this->first_name.' '.$this->last_name;
+        return $this->first_name.' '.$this->last_name.' '.$this->suffix;
     }
 
     /**
