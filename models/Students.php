@@ -36,12 +36,12 @@ class Students extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['first_name', 'last_name', 'email', 'status', 'gender'], 'required'],
+            [['first_name', 'last_name', 'email', 'status', 'gender', 'civil_status'], 'required'],
             [['date_of_birth', 'enrollment_date'], 'safe'],
-            [['status'], 'string'],
+            [['status', 'address'], 'string'],
             [['first_name', 'middle_name', 'last_name'], 'string', 'max' => 50],
             [['suffix'], 'string', 'max' => 10],
-            [['gender'], 'string', 'max' => 10],
+            [['gender','civil_status'], 'string', 'max' => 10],
             [['email'], 'string', 'max' => 100],
             [['phone'], 'string', 'max' => 15],
             [['email'], 'unique'],
@@ -65,6 +65,8 @@ class Students extends \yii\db\ActiveRecord
             'phone' => 'Phone',
             'enrollment_date' => 'Enrollment Date',
             'status' => 'Status',
+            'address' => 'Address',
+            'civil_status' => 'Civil Status',
         ];
     }
 

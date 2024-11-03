@@ -37,6 +37,7 @@
         <!-- Sidebar Menu -->
         <nav class="mt-2">
             <?php
+            if(!Yii::$app->user->isGuest && Yii::$app->user->identity->username == 'admin'){
             echo \hail812\adminlte\widgets\Menu::widget([
                 'items' => [
                     ['label' => 'Login', 'url' => ['/user/login'], 'icon' => 'sign-in-alt', 'visible' => Yii::$app->user->isGuest],
@@ -48,16 +49,36 @@
                     ['label' => 'Class Management', 'header' => true, 'visible' => !Yii::$app->user->isGuest],
                     ['label' => 'Registration',  'icon' => 'edit', 'url' => ['#'], 'visible' => !Yii::$app->user->isGuest],
                     ['label' => 'Schedules', 'iconStyle' => 'fa',  'icon' => 'calendar', 'url' => ['#'], 'visible' => !Yii::$app->user->isGuest],
-                    // Settings
-                    ['label' => 'Settings', 'header' => true, 'visible' => !Yii::$app->user->isGuest],
-                    ['label' => 'Announcement',  'icon' => 'bullhorn', 'url' => ['/announcement/index'], 'visible' => !Yii::$app->user->isGuest],
-                    ['label' => 'Courses',  'icon' => 'briefcase', 'url' => ['/course/index'], 'visible' => !Yii::$app->user->isGuest],
-                    ['label' => 'Departments',  'icon' => 'building', 'url' => ['/departments/index'], 'visible' => !Yii::$app->user->isGuest],
-                    ['label' => 'Instructor Profiling',  'icon' => 'user-circle', 'url' => ['/instructors/index'], 'visible' => !Yii::$app->user->isGuest],
-                    ['label' => 'Subjects',  'icon' => 'book', 'url' => ['/subject/index'], 'visible' => !Yii::$app->user->isGuest],
-                    ['label' => 'User Management',  'icon' => 'users', 'url' => ['/user/admin'], 'visible' => !Yii::$app->user->isGuest],
+                    ['label' => 'Support and Settings', 'header' => true, 'visible' => !Yii::$app->user->isGuest],
+                    [
+                        'label' => 'Student Support',
+                        'icon' => 'info-circle',
+                        'visible' => !Yii::$app->user->isGuest,
+                        'items' => [
+                            ['label' => 'Announcement',  'icon' => 'bullhorn', 'url' => ['/announcement/index'], 'visible' => !Yii::$app->user->isGuest],
+                            ['label' => 'Concerns',  'icon' => 'envelope-square', 'url' => ['/concern/index'], 'visible' => !Yii::$app->user->isGuest],
+                            ['label' => 'Events',  'icon' => 'calendar-check', 'url' => ['/event/index'], 'visible' => !Yii::$app->user->isGuest],
+                            ['label' => 'Module Grants',  'icon' => 'book', 'url' => ['/module-grant/index'], 'visible' => !Yii::$app->user->isGuest],
+                        ]
+                    ],
+                    [
+                        'label' => 'Settings',
+                        'icon' => 'cog',
+                        'visible' => !Yii::$app->user->isGuest,
+                        'items' => [
+                            ['label' => 'Courses',  'icon' => 'briefcase', 'url' => ['/course/index'], 'visible' => !Yii::$app->user->isGuest],
+                            ['label' => 'Departments',  'icon' => 'building', 'url' => ['/departments/index'], 'visible' => !Yii::$app->user->isGuest],
+                            ['label' => 'Instructor Profiling',  'icon' => 'user-circle', 'url' => ['/instructors/index'], 'visible' => !Yii::$app->user->isGuest],
+                            ['label' => 'Subjects',  'icon' => 'book', 'url' => ['/subject/index'], 'visible' => !Yii::$app->user->isGuest],
+                            ['label' => 'User Management',  'icon' => 'users', 'url' => ['/user/admin/index'], 'visible' => !Yii::$app->user->isGuest],
+                        ]
+                    ],
                 ],
             ]);
+            }
+            else{
+
+            }
             ?>
         </nav>
         <!-- /.sidebar-menu -->
