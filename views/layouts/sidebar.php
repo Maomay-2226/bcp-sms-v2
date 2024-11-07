@@ -45,10 +45,7 @@
                     ['label' => 'Student Registration', 'header' => true, 'visible' => !Yii::$app->user->isGuest],
                     ['label' => 'New Students', 'url' => ['/students/create'], 'icon' => 'user-plus', 'iconStyle' => 'fa', 'visible' => !Yii::$app->user->isGuest],
                     ['label' => 'Enrolled Students', 'url' => ['/students/index'], 'icon' => 'edit', 'iconStyle' => 'fa', 'visible' => !Yii::$app->user->isGuest],  
-                    // Class Management
-                    ['label' => 'Class Management', 'header' => true, 'visible' => !Yii::$app->user->isGuest],
-                    ['label' => 'Registration',  'icon' => 'edit', 'url' => ['#'], 'visible' => !Yii::$app->user->isGuest],
-                    ['label' => 'Schedules', 'iconStyle' => 'fa',  'icon' => 'calendar', 'url' => ['#'], 'visible' => !Yii::$app->user->isGuest],
+                    ['label' => 'Schedules', 'iconStyle' => 'fa',  'icon' => 'calendar', 'url' => ['/schedule/index'], 'visible' => !Yii::$app->user->isGuest],
                     ['label' => 'Support and Settings', 'header' => true, 'visible' => !Yii::$app->user->isGuest],
                     [
                         'label' => 'Student Support',
@@ -69,6 +66,8 @@
                             ['label' => 'Courses',  'icon' => 'briefcase', 'url' => ['/course/index'], 'visible' => !Yii::$app->user->isGuest],
                             ['label' => 'Departments',  'icon' => 'building', 'url' => ['/departments/index'], 'visible' => !Yii::$app->user->isGuest],
                             ['label' => 'Instructor Profiling',  'icon' => 'user-circle', 'url' => ['/instructors/index'], 'visible' => !Yii::$app->user->isGuest],
+                            ['label' => 'Majors',  'icon' => 'user-circle', 'url' => ['/majors/index'], 'visible' => !Yii::$app->user->isGuest],
+                            ['label' => 'Sections',  'icon' => 'sitemap', 'url' => ['/sections/index'], 'visible' => !Yii::$app->user->isGuest],
                             ['label' => 'Subjects',  'icon' => 'book', 'url' => ['/subject/index'], 'visible' => !Yii::$app->user->isGuest],
                             ['label' => 'User Management',  'icon' => 'users', 'url' => ['/user/admin/index'], 'visible' => !Yii::$app->user->isGuest],
                         ]

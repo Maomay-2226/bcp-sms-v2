@@ -9,21 +9,23 @@ use yii\widgets\ActiveForm;
 ?>
 
 <div class="concern-form">
+    <div class="row">
+        <div class="col-md-6">
+            <?php $form = ActiveForm::begin(); ?>
 
-    <?php $form = ActiveForm::begin(); ?>
+            <?= $form->field($model, 'student_id')->textInput() ?>
 
-    <?= $form->field($model, 'student_id')->textInput() ?>
+            <?= $form->field($model, 'concern_type_id')->textInput() ?>
 
-    <?= $form->field($model, 'concern_type_id')->textInput() ?>
+            <?= $form->field($model, 'message')->textarea(['rows' => 6]) ?>
 
-    <?= $form->field($model, 'message')->textarea(['rows' => 6]) ?>
+            <?= $form->field($model, 'date')->textInput() ?>
 
-    <?= $form->field($model, 'date')->textInput() ?>
+            <div class="form-group">
+                <?= Html::submitButton('Save', ['class' => 'btn btn-success']) ?>
+            </div>
 
-    <div class="form-group">
-        <?= Html::submitButton('Save', ['class' => 'btn btn-success']) ?>
+            <?php ActiveForm::end(); ?>
+        </div>
     </div>
-
-    <?php ActiveForm::end(); ?>
-
 </div>

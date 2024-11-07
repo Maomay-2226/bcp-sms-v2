@@ -34,7 +34,7 @@ class SubjectEnrollment extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['student_id', 'subject_id', 'academic_year'], 'integer'],
+            [['student_id', 'subject_id', 'academic_year', 'schedule_id'], 'integer'],
             [['status', 'semester'], 'string'],
             [['semester'], 'required'],
             [['grade'], 'number'],
@@ -56,6 +56,7 @@ class SubjectEnrollment extends \yii\db\ActiveRecord
             'academic_year' => 'Academic Year',
             'semester' => 'Semester',
             'grade' => 'Grade',
+            'schedule_id' => 'Schedule ID',
         ];
     }
 
@@ -77,5 +78,10 @@ class SubjectEnrollment extends \yii\db\ActiveRecord
     public function getSubject()
     {
         return $this->hasOne(Subject::class, ['id' => 'subject_id']);
+    }
+
+    public function getSchedule()
+    {
+        return $this->hasOne(Schedule::class, ['id' => 'schedule_id']);
     }
 }

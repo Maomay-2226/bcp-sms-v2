@@ -13,7 +13,7 @@ use yii\bootstrap4\ActiveForm;
     <?php $form = ActiveForm::begin(); ?>
 
     <div class="row">
-        <div class="col-md-9">
+        <div class="col-md-12">
             <div class="card mb-3">
                 <div class="card-header bg-info ">Student Information</div>
                 <div class="card-body">
@@ -37,6 +37,9 @@ use yii\bootstrap4\ActiveForm;
                                 </div>
                                 <div class="col-md-6">
                                     <?= $form->field($model, 'phone')->textInput(['maxlength' => true]) ?>
+                                </div>
+                                <div class="col-md-12">
+                                    <?= $form->field($model, 'address')->textArea(['row' => 3]) ?>
                                 </div>
                             </div>
                         </div>
@@ -66,13 +69,21 @@ use yii\bootstrap4\ActiveForm;
                                         'inactive' => 'Inactive',
                                     ], ['prompt' => 'Select Status']) ?>
                                 </div>
+                                <div class="col-md-12">
+                                    <?= $form->field($model, 'civil_status')->dropDownList([
+                                        'Single' => 'Single', 
+                                        'Married' => 'Married',
+                                        'Widowed' => 'Widowed',
+                                        'Separated' => 'Separated'
+                                    ], ['prompt' => 'Select Civil Status']) ?>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="col-md-3">
+        <!-- <div class="col-md-3">
             <div class="card mb-3">
                 <div class="card-header bg-info ">Capture   Image</div>
                 <div class="card-body">
@@ -81,7 +92,7 @@ use yii\bootstrap4\ActiveForm;
                     <span class="btn btn-primary btn-sm mt-2 btn-block"><i class="fa fa-camera"></i> <b>CAPTURE</b></span>
                 </div>
             </div>
-        </div>
+        </div> -->
     </div>
 
     <div class="form-group">

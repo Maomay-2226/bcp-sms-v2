@@ -3,11 +3,15 @@
 namespace app\controllers;
 
 use app\models\Students;
+use app\models\SubjectEnrollment;
+use app\models\Enrollments;
+use app\models\Schedule;
 use app\models\search\StudentsSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use yii\filters\AccessControl;
+use yii\web\UploadedFile;
 
 /**
  * StudentsController implements the CRUD actions for Students model.
@@ -67,9 +71,45 @@ class StudentsController extends Controller
      */
     public function actionView($id)
     {
+        $model = $this->findModel(($id));
+        $modelSchedules = [];
+        $modelEnrollment = Enrollments::find()->where(['student_id' => $id, 'status' => 'Active'])->one();
+        if(!$modelEnrollment){
+            $modelEnrollment = new Enrollments;
+        }
+        else{
+            $modelSchedules = Schedule::find()->joinWith('subject')->where(['course_id' => $modelEnrollment->course_id])->all();
+        }
+        $modelEnrollment->student_id = $id;
+
+        if ($model->load($this->request->post())) {
+            $model->fileUploads = UploadedFile::getInstances($model, 'fileUploads');
+            if ($model->upload()) {
+                return $this->redirect(['view', 'id' => $model->id]);
+            } else{
+                echo "<pre>";
+                print_r($model->getErrors());
+                exit;
+            }
+        }
+
         return $this->render('view', [
-            'model' => $this->findModel($id),
+            'model' => $model,
+            'modelEnrollment' => $modelEnrollment,
+            'modelSchedules' => $modelSchedules,
         ]);
+    }
+
+    public function actionAddSchedule($student_id, $subject_id, $academic_year, $semester, $schedule_id){
+        $model = new SubjectEnrollment;
+        $model->student_id = $student_id;
+        $model->subject_id = $subject_id;
+        $model->academic_year = $academic_year;
+        $model->semester = $semester;
+        $model->schedule_id = $schedule_id;
+        $model->save();
+        
+        return $this->redirect(['view', 'id' => $student_id]);
     }
 
     /**
@@ -84,6 +124,23 @@ class StudentsController extends Controller
         if ($this->request->isPost) {
             if ($model->load($this->request->post()) && $model->save()) {
                 return $this->redirect(['view', 'id' => $model->id]);
+            }
+        } else {
+            $model->loadDefaultValues();
+        }
+
+        return $this->render('create', [
+            'model' => $model,
+        ]);
+    }
+
+    public function actionCreateEnrollment()
+    {
+        $model = new Enrollments();
+
+        if ($this->request->isPost) {
+            if ($model->load($this->request->post()) && $model->save()) {
+                return $this->redirect(['view', 'id' => $model->student_id]);
             }
         } else {
             $model->loadDefaultValues();

@@ -51,6 +51,20 @@ $config = [
             'enableUnconfirmedLogin' => true,
             'admins' => ['admin']
         ],
+        'attachments' => [
+            'class' => nemmo\attachments\Module::className(),
+            'tempPath' => 'uploads/temp',
+            'storePath' => 'uploads/store',
+            'rules' => [ // Rules according to the FileValidator
+                'maxFiles' => 10, // Allow to upload maximum 3 files, default to 3
+                // 'mimeTypes' => 'image/png', // Only png images
+                'maxSize' => 10240 * 10240 // 1 MB
+            ],
+            'tableName' => '{{%attachments}}' // Optional, default to 'attach_file'
+	    ],
+        'utility' => [
+          'class' => 'c006\utility\migration\Module',
+       ],
     ],
     'params' => $params,
 ];

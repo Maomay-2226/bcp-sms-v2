@@ -36,7 +36,7 @@ use yii\bootstrap4\ActiveForm;
 
     <div class="row">
         <div class="col-md-6">
-            <?= $form->field($model, 'credits')->textInput(['placeholder' => 'Enter Credits']) ?>
+            <?= $form->field($model, 'credits')->textInput(['placeholder' => 'Enter Units']) ?>
         </div>
     </div>
 

@@ -8,11 +8,11 @@ use Yii;
  * This is the model class for table "majors".
  *
  * @property int $id
- * @property int $subject_id
+ * @property int $course_id
  * @property string $code
  * @property string|null $description
  *
- * @property Subject $subject
+ * @property Course $course
  * @property Enrollments[] $enrollments
  */
 class Majors extends \yii\db\ActiveRecord
@@ -31,12 +31,11 @@ class Majors extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['id', 'subject_id', 'code'], 'required'],
-            [['id', 'subject_id'], 'integer'],
+            [['course_id', 'description', 'code'], 'required'],
+            [['course_id'], 'integer'],
             [['code'], 'string', 'max' => 50],
             [['description'], 'string', 'max' => 255],
-            [['id'], 'unique'],
-            [['subject_id'], 'exist', 'skipOnError' => true, 'targetClass' => Subject::class, 'targetAttribute' => ['subject_id' => 'id']],
+            [['course_id'], 'exist', 'skipOnError' => true, 'targetClass' => Course::class, 'targetAttribute' => ['course_id' => 'id']],
         ];
     }
 
@@ -47,20 +46,31 @@ class Majors extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-            'subject_id' => 'Subject ID',
+            'course_id' => 'Course',
             'code' => 'Code',
             'description' => 'Description',
+            'course.course_code' => 'Course',
         ];
     }
 
     /**
-     * Gets query for [[Subject]].
+     * Gets query for [[Course]].
      *
      * @return \yii\db\ActiveQuery
      */
-    public function getSubject()
+    public function getCourse()
     {
-        return $this->hasOne(Subject::class, ['id' => 'subject_id']);
+        return $this->hasOne(Course::class, ['id' => 'course_id']);
+    }
+
+    public function getCourses()
+    {
+        $query = Course::find()->all();
+        $arr = [];
+        foreach ($query as $key => $value) {
+            $arr[$value->id] = $value->course_code;
+        }
+        return $arr;
     }
 
     /**

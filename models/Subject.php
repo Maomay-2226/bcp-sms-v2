@@ -54,7 +54,7 @@ class Subject extends \yii\db\ActiveRecord
             'subject_code' => 'Code',
             'course_id' => 'Course',
             'description' => 'Description',
-            'credits' => 'Credits',
+            'credits' => 'Units',
         ];
     }
     
@@ -109,6 +109,16 @@ class Subject extends \yii\db\ActiveRecord
         $arr = [];
         foreach ($query as $key => $value) {
             $arr[$value->id] = $value->course_title;
+        }
+        return $arr;
+    }
+
+    public function getInstructors()
+    {
+        $query = Instructors::find()->all();
+        $arr = [];
+        foreach ($query as $key => $value) {
+            $arr[$value->id] = $value->fullname;
         }
         return $arr;
     }

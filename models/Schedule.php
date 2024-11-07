@@ -35,7 +35,7 @@ class Schedule extends \yii\db\ActiveRecord
         return [
             [['subject_id', 'instructor_id', 'day_of_week', 'start_time', 'end_time'], 'required'],
             [['subject_id', 'instructor_id'], 'integer'],
-            [['day_of_week'], 'string'],
+            [['day_of_week','room_no'], 'string'],
             [['start_time', 'end_time'], 'safe'],
             [['subject_id'], 'exist', 'skipOnError' => true, 'targetClass' => Subject::class, 'targetAttribute' => ['subject_id' => 'id']],
             [['instructor_id'], 'exist', 'skipOnError' => true, 'targetClass' => Instructors::class, 'targetAttribute' => ['instructor_id' => 'id']],
@@ -49,11 +49,13 @@ class Schedule extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-            'subject_id' => 'Subject ID',
-            'instructor_id' => 'Instructor ID',
-            'day_of_week' => 'Day Of Week',
+            'subject_id' => 'Subject',
+            'instructor_id' => 'Instructor',
+            'day_of_week' => 'Day of Week',
             'start_time' => 'Start Time',
             'end_time' => 'End Time',
+            'room_no' => 'Room',
+            'instructor.fullname' => 'Instructor',
         ];
     }
 
@@ -75,5 +77,25 @@ class Schedule extends \yii\db\ActiveRecord
     public function getInstructor()
     {
         return $this->hasOne(Instructors::class, ['id' => 'instructor_id']);
+    }
+
+    public function getSubjects()
+    {
+        $query = Subject::find()->all();
+        $arr = [];
+        foreach ($query as $key => $value) {
+            $arr[$value->id] = $value->subject_name;
+        }
+        return $arr;
+    }
+
+    public function getInstructors()
+    {
+        $query = Instructors::find()->all();
+        $arr = [];
+        foreach ($query as $key => $value) {
+            $arr[$value->id] = $value->fullname;
+        }
+        return $arr;
     }
 }

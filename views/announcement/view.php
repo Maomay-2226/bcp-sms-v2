@@ -30,6 +30,7 @@ $this->params['breadcrumbs'][] = $this->title;
             <hr>
             <?= DetailView::widget([
                 'model' => $model,
+                'options' => ['class' => 'table table-bordered detail-view', 'style' => 'background-color: white'],
                 'attributes' => [
                     'announcement:ntext',
                     [

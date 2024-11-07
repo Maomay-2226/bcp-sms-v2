@@ -43,8 +43,8 @@ class Concern extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-            'student_id' => 'Student ID',
-            'concern_type_id' => 'Concern Type ID',
+            'student_id' => 'Student',
+            'concern_type_id' => 'Type',
             'message' => 'Message',
             'date' => 'Date',
         ];

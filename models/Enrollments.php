@@ -12,9 +12,13 @@ use Yii;
  * @property int $course_id
  * @property int|null $major_id
  * @property int $academic_year
- * @property string $section
+ * @property int $section_id
  * @property string $semester
  * @property float|null $grade
+ * @property string $category
+ * @property string $admission_type
+ * @property string $modality
+ * @property string $branch
  *
  * @property Course $course
  * @property Grades[] $grades
@@ -37,14 +41,13 @@ class Enrollments extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['student_id', 'course_id', 'semester'], 'required'],
-            [['student_id', 'course_id', 'major_id', 'academic_year'], 'integer'],
-            [['semester'], 'string'],
+            [['student_id', 'course_id', 'academic_year', 'section_id', 'semester', 'category', 'admission_type', 'modality', 'branch'], 'required'],
+            [['student_id', 'course_id', 'major_id', 'academic_year', 'section_id'], 'integer'],
+            [['semester', 'category', 'admission_type', 'modality', 'branch'], 'string'],
             [['grade'], 'number'],
-            [['section'], 'string', 'max' => 20],
+            [['course_id'], 'exist', 'skipOnError' => true, 'targetClass' => Course::class, 'targetAttribute' => ['course_id' => 'id']],
             [['major_id'], 'exist', 'skipOnError' => true, 'targetClass' => Majors::class, 'targetAttribute' => ['major_id' => 'id']],
             [['student_id'], 'exist', 'skipOnError' => true, 'targetClass' => Students::class, 'targetAttribute' => ['student_id' => 'id']],
-            [['course_id'], 'exist', 'skipOnError' => true, 'targetClass' => Course::class, 'targetAttribute' => ['course_id' => 'id']],
         ];
     }
 
@@ -56,12 +59,16 @@ class Enrollments extends \yii\db\ActiveRecord
         return [
             'id' => 'ID',
             'student_id' => 'Student ID',
-            'course_id' => 'Course',
-            'major_id' => 'Major',
+            'course_id' => 'Course ID',
+            'major_id' => 'Major ID',
             'academic_year' => 'Academic Year',
-            'section' => 'Section',
+            'section_id' => 'Section ID',
             'semester' => 'Semester',
             'grade' => 'Grade',
+            'category' => 'Category',
+            'admission_type' => 'Admission Type',
+            'modality' => 'Modality',
+            'branch' => 'Branch',
         ];
     }
 
@@ -103,5 +110,40 @@ class Enrollments extends \yii\db\ActiveRecord
     public function getStudent()
     {
         return $this->hasOne(Students::class, ['id' => 'student_id']);
+    }
+
+    public function getSection()
+    {
+        return $this->hasOne(Sections::class, ['id' => 'section_id']);
+    }
+
+    public function getCourses()
+    {
+        $query = Course::find()->all();
+        $arr = [];
+        foreach ($query as $key => $value) {
+            $arr[$value->id] = $value->course_code;
+        }
+        return $arr;
+    }
+
+    public function getMajors()
+    {
+        $query = Majors::find()->all();
+        $arr = [];
+        foreach ($query as $key => $value) {
+            $arr[$value->id] = $value->description;
+        }
+        return $arr;
+    }
+
+    public function getSections()
+    {
+        $query = Sections::find()->all();
+        $arr = [];
+        foreach ($query as $key => $value) {
+            $arr[$value->id] = $value->course->course_code.'-'.$value->code;
+        }
+        return $arr;
     }
 }
