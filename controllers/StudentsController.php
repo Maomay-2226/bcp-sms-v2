@@ -2,6 +2,7 @@
 
 namespace app\controllers;
 
+use Yii;
 use app\models\Students;
 use app\models\SubjectEnrollment;
 use app\models\Enrollments;
@@ -74,10 +75,12 @@ class StudentsController extends Controller
         $model = $this->findModel(($id));
         $modelSchedules = [];
         $modelEnrollment = Enrollments::find()->where(['student_id' => $id, 'status' => 'Active'])->one();
+        $enrolled_flag = false;
         if(!$modelEnrollment){
             $modelEnrollment = new Enrollments;
         }
         else{
+            $enrolled_flag = true;
             $modelSchedules = Schedule::find()->joinWith('subject')->where(['course_id' => $modelEnrollment->course_id])->all();
         }
         $modelEnrollment->student_id = $id;
@@ -97,17 +100,49 @@ class StudentsController extends Controller
             'model' => $model,
             'modelEnrollment' => $modelEnrollment,
             'modelSchedules' => $modelSchedules,
+            'enrolled_flag' => $enrolled_flag,
+        ]);
+    }
+
+    public function actionPrintSchedule($id){
+        $model = $this->findModel(($id));
+        $modelSchedules = [];
+        $modelEnrollment = Enrollments::find()->where(['student_id' => $id, 'status' => 'Active'])->one();
+        if(!$modelEnrollment){
+            $modelEnrollment = new Enrollments;
+        }
+        else{
+            $modelSchedules = Schedule::find()->joinWith('subject')->where(['course_id' => $modelEnrollment->course_id])->all();
+        }
+        $modelEnrollment->student_id = $id;
+
+        return $this->renderPartial('print_sched', [
+            'model' => $model,
+            'modelEnrollment' => $modelEnrollment,
+            'modelSchedules' => $modelSchedules,
         ]);
     }
 
     public function actionAddSchedule($student_id, $subject_id, $academic_year, $semester, $schedule_id){
-        $model = new SubjectEnrollment;
-        $model->student_id = $student_id;
-        $model->subject_id = $subject_id;
-        $model->academic_year = $academic_year;
-        $model->semester = $semester;
-        $model->schedule_id = $schedule_id;
-        $model->save();
+        $check_enrollment = SubjectEnrollment::find()->where([
+            'student_id'=>$student_id,
+            'subject_id'=>$subject_id,
+            'academic_year'=>$academic_year,
+            'semester'=>$semester,
+            'schedule_id'=>$schedule_id,
+        ])->exists();
+        if($check_enrollment){
+            Yii::$app->session->setFlash('warning', 'Schedule already exists.');
+        }
+        else{
+            $model = new SubjectEnrollment;
+            $model->student_id = $student_id;
+            $model->subject_id = $subject_id;
+            $model->academic_year = $academic_year;
+            $model->semester = $semester;
+            $model->schedule_id = $schedule_id;
+            $model->save();
+        }
         
         return $this->redirect(['view', 'id' => $student_id]);
     }
@@ -134,9 +169,15 @@ class StudentsController extends Controller
         ]);
     }
 
-    public function actionCreateEnrollment()
+    public function actionCreateEnrollment($student_id)
     {
-        $model = new Enrollments();
+        $check_active = Enrollments::find()->where(['status' => 'Active', 'student_id' => $student_id])->one();
+        if($check_active){
+            $model = $check_active;
+        }
+        else{
+            $model = new Enrollments();
+        }
 
         if ($this->request->isPost) {
             if ($model->load($this->request->post()) && $model->save()) {

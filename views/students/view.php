@@ -169,25 +169,47 @@ $this->params['breadcrumbs'][] = $this->title;
                 <div class="col-md 12">
                     <div class="card mb-3">
                         <div class="card-header bg-info ">Active Enrollment Information
-                            <button type="button" class="btn btn-dark btn-xs float-right" data-toggle="modal" data-target=".enrollment-modal"><i class="fa fa-plus"></i></button>
+                            <button type="button" class="btn btn-dark btn-xs float-right" data-toggle="modal" data-target=".enrollment-modal"><i class="fa fa-<?= $enrolled_flag ? 'edit' : 'plus' ?>"></i></button>
                         </div>
                         <div class="card-body">
-                            <table class="table text-center table-bordered table-sm">
+                            <table class="table table-bordered table-sm">
                                 <tr class="thead-light">
                                     <th>Academic Year</th>
                                     <th>Year & Semester</th>
                                     <th>Course</th>
                                     <th>Major</th>
                                     <th>Section</th>
-                                    <th>Final Grade</th>
+                                    <th class="text-center">Status</th>
+                                    <th class="text-center">Final Grade</th>
                                 </tr>
                                 <tr>
+                                    <?php 
+                                        $year_arr = [1=>'1st',2=>'2nd',3=>'3rd',4=>'4th',5=>'5th'];
+                                    ?>
                                     <td><?= ($modelEnrollment->academic_year) ? $modelEnrollment->academic_year : '-'  ?></td>
-                                    <td><?= ($modelEnrollment->section) ? $modelEnrollment->section->year.'-'.$modelEnrollment->semester : '-' ?></td>
+                                    <td><?= ($modelEnrollment->section) ? '<b>'.$year_arr[$modelEnrollment->section->year].'</b> Year, <b>'.$modelEnrollment->semester.'</b> Semester' : '-' ?></td>
                                     <td><?= ($modelEnrollment->course) ? $modelEnrollment->course->course_code : '-' ?></td>
                                     <td><?= ($modelEnrollment->major) ? $modelEnrollment->major->description : '-' ?></td>
                                     <td><?= ($modelEnrollment->section) ? $modelEnrollment->section->code : '-' ?></td>
-                                    <td><?= ($modelEnrollment->grade) ? $modelEnrollment->grade : '-' ?></td>
+                                    <td class="text-center"><?= ($modelEnrollment->grading_status) ? $modelEnrollment->grading_status : '-' ?></td>
+                                    <?php if($modelEnrollment->grade) : ?>
+                                        <td class="text-center">
+                                            <?= $modelEnrollment->grade ?>
+                                            <?php
+                                                echo Html::a('<i class="fa fa-edit"></i>', [
+                                                    'enrollments/update', 'id' => $modelEnrollment->id,
+                                                ],['class' => 'btn btn-xs btn-primary']);
+                                            ?>
+                                        </td>
+                                    <?php else : ?>
+                                        <td class="text-center">
+                                            <?php
+                                                echo Html::a('<i class="fa fa-edit"></i>', [
+                                                    'enrollments/update', 'id' => $modelEnrollment->id,
+                                                ],['class' => 'btn btn-xs btn-primary']);
+                                            ?>
+                                        </td>
+                                    <?php endif; ?>
                                 </tr>
                             </table>
                             <!-- <button type="button" class="btn btn-primary btn-xs mt-2 btn-block" data-toggle="modal" data-target=".bd-example-modal-sm"><i class="fa fa-history"></i> <b>SEE ALL</b></button> -->
@@ -195,14 +217,14 @@ $this->params['breadcrumbs'][] = $this->title;
                                 <div class="modal-dialog modal-xl">
                                     <div class="modal-content p-3">
                                     <h5><b>Enrollment Information</b></h5>
-                                    <table class="table table-striped table-bordered text-center ">
+                                    <table class="table table-striped table-bordered">
                                         <tr class="bg-info">
                                             <th>Academic Year</th>
                                             <th>Year & Semester</th>
                                             <th>Course</th>
                                             <th>Major</th>
                                             <th>Section</th>
-                                            <th>Final Grade</th>
+                                            <th class="text-center">Final Grade</th>
                                         </tr>
                                         <tr>
                                             <td>-</td>
@@ -210,7 +232,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                             <td>-</td>
                                             <td>-</td>
                                             <td>-</td>
-                                            <td>-</td>
+                                            <td class="text-center">-</td>
                                         </tr>
                                     </table>
                                     </div>
@@ -223,7 +245,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                         <div class="enrollments-form">
                                             <?php $form2 = ActiveForm::begin([
                                                 'id' => 'form-b',
-                                                'action' => ['create-enrollment']
+                                                'action' => ['create-enrollment', 'student_id' => $model->id]
                                             ]) ?>
                                             <?= $form2->field($modelEnrollment, 'student_id')->textInput(['readonly' => true]) ?>
                                             <div class="row">
@@ -236,13 +258,13 @@ $this->params['breadcrumbs'][] = $this->title;
                                             </div>
                                             <div class="row">
                                                 <div class="col-md-4">
-                                                    <?= $form->field($modelEnrollment, 'course_id')->dropDownList($modelEnrollment->courses, ['prompt' => 'Select Course']) ?>
+                                                    <?= $form2->field($modelEnrollment, 'course_id')->dropDownList($modelEnrollment->courses, ['prompt' => 'Select Course']) ?>
                                                 </div>
                                                 <div class="col-md-4">
-                                                    <?= $form->field($modelEnrollment, 'major_id')->dropDownList($modelEnrollment->majors, ['prompt' => 'Select Major']) ?>
+                                                    <?= $form2->field($modelEnrollment, 'major_id')->dropDownList($modelEnrollment->majors, ['prompt' => 'Select Major']) ?>
                                                 </div>
                                                 <div class="col-md-4">
-                                                    <?= $form->field($modelEnrollment, 'section_id')->dropDownList($modelEnrollment->sections, ['prompt' => 'Select Section']) ?>
+                                                    <?= $form2->field($modelEnrollment, 'section_id')->dropDownList($modelEnrollment->sections, ['prompt' => 'Select Section']) ?>
                                                 </div>
                                             </div>
                                             <div class="row">
@@ -278,10 +300,12 @@ $this->params['breadcrumbs'][] = $this->title;
                     <div class="card mb-3">
                         <div class="card-header bg-info ">Enrolled Subject and Schedules
                             <button type="button" class="btn btn-dark btn-xs float-right" data-toggle="modal" data-target=".subject-modal"><i class="fa fa-plus"></i></button>
-                            <span class="btn btn-dark btn-xs float-right mr-1"><i class="fa fa-print"></i></span> 
+                            <?php echo Html::a('<i class="fa fa-print"></i>', ['students/print-schedule', 'id' => $model->id,],['class' => 'btn btn-xs btn-dark float-right mr-1', 'target' => '_blank']);?>
+
+                            
                         </div>
                         <div class="card-body">
-                            <table class="table text-center table-bordered table-sm">
+                            <table class="table table-bordered table-sm">
                                 <thead class="thead-light">
                                     <tr>
                                         <th>#</th>
@@ -292,8 +316,9 @@ $this->params['breadcrumbs'][] = $this->title;
                                         <th>Time</th>
                                         <th>Room</th>
                                         <th>Instructor</th>
-                                        <th>Status</th>
-                                        <!-- <th>Action</th> -->
+                                        <th class="text-center">Status</th>
+                                        <th class="text-center">Grade</th>
+                                        <th class="text-center">Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -308,8 +333,15 @@ $this->params['breadcrumbs'][] = $this->title;
                                         <td><?= date('h:i A', strtotime($value->schedule->start_time)) . ' - ' . date('h:i A', strtotime($value->schedule->end_time)) ?></td>
                                         <td><?= $value->schedule->room_no ?></td>
                                         <td><?= $value->schedule->instructor->fullname ?></td>
-                                        <td><?= $value->status ?></td>
-                                        <!-- <td></td> -->
+                                        <td class="text-center"><?= ($value->status) ? $value->status : '-' ?></td>
+                                        <td class="text-center"><?= $value->grade ? $value->grade : '-' ?></td>
+                                        <td class="text-center">
+                                            <?php
+                                                echo Html::a('<i class="fa fa-edit"></i>', [
+                                                    'subject-enrollment/update', 'id' => $value->id,
+                                                ],['class' => 'btn btn-xs btn-primary']);
+                                            ?>
+                                        </td>
                                     </tr>
                                     <?php $count1++; } ?>
                                 </tbody>

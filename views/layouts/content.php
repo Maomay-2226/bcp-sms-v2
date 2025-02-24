@@ -42,6 +42,13 @@ use yii\helpers\Url;
     <!-- Main content -->
     <div class="content">
         <div class="col-md-12">
+            <?php foreach (Yii::$app->session->getAllFlashes() as $type => $message): ?>
+                <div class="alert alert-<?= $type ?> alert-dismissible">
+                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                    <h5><i class="icon fas fa-exclamation-triangle"></i> <?= ucfirst($type) ?>!</h5>
+                    <?= $message ?>
+                </div>
+            <?php endforeach; ?>
             <?= $content ?><!-- /.container-fluid -->
         </div>
         

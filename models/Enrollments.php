@@ -43,7 +43,8 @@ class Enrollments extends \yii\db\ActiveRecord
         return [
             [['student_id', 'course_id', 'academic_year', 'section_id', 'semester', 'category', 'admission_type', 'modality', 'branch'], 'required'],
             [['student_id', 'course_id', 'major_id', 'academic_year', 'section_id'], 'integer'],
-            [['semester', 'category', 'admission_type', 'modality', 'branch'], 'string'],
+            [['semester', 'category', 'admission_type', 'modality', 'branch', 'status', 'grading_status'], 'string'],
+            [['grading_status','grade'], 'safe'],
             [['grade'], 'number'],
             [['course_id'], 'exist', 'skipOnError' => true, 'targetClass' => Course::class, 'targetAttribute' => ['course_id' => 'id']],
             [['major_id'], 'exist', 'skipOnError' => true, 'targetClass' => Majors::class, 'targetAttribute' => ['major_id' => 'id']],
@@ -58,17 +59,19 @@ class Enrollments extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-            'student_id' => 'Student ID',
-            'course_id' => 'Course ID',
-            'major_id' => 'Major ID',
+            'student_id' => 'Student',
+            'course_id' => 'Course',
+            'major_id' => 'Major',
             'academic_year' => 'Academic Year',
-            'section_id' => 'Section ID',
+            'section_id' => 'Section',
             'semester' => 'Semester',
-            'grade' => 'Grade',
+            'grade' => 'Final Grade',
             'category' => 'Category',
             'admission_type' => 'Admission Type',
             'modality' => 'Modality',
             'branch' => 'Branch',
+            'status' => 'Status',
+            'grading_status' => 'Grading Status',
         ];
     }
 

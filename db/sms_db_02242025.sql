@@ -100,12 +100,13 @@ CREATE TABLE IF NOT EXISTS `enrollments` (
   `academic_year` int(11) NOT NULL,
   `section_id` int(11) NOT NULL,
   `semester` enum('1st','2nd') NOT NULL,
-  `grade` decimal(5,5) DEFAULT NULL,
+  `grade` decimal(3,2) DEFAULT NULL,
   `category` enum('College','SHS') NOT NULL,
   `admission_type` enum('Regular','Scholarship','Continuing') NOT NULL,
   `modality` enum('Face-to-Face','Online','Hybrid') NOT NULL,
   `branch` enum('Main Branch','Bulacan','MV') NOT NULL,
   `status` enum('Active','Inactive') NOT NULL DEFAULT 'Active',
+  `grading_status` varchar(50) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `student_id` (`student_id`),
   KEY `FK_enrollments_majors` (`major_id`),
@@ -206,11 +207,9 @@ CREATE TABLE IF NOT EXISTS `module_grant` (
   `student_id` int(11) NOT NULL,
   `module_link` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
--- Dumping data for table sms_db.module_grant: ~1 rows (approximately)
-INSERT INTO `module_grant` (`id`, `module_description`, `condition_description`, `date_open`, `date_close`, `is_requested`, `is_approved`, `student_id`, `module_link`) VALUES
-	(1, 'Sample', 'Sample', '2024-11-07', '2024-11-30', 'Yes', 'Yes', 20000001, 'http://sms.dev.com/module-grant/create');
+-- Dumping data for table sms_db.module_grant: ~0 rows (approximately)
 
 -- Dumping structure for table sms_db.profile
 CREATE TABLE IF NOT EXISTS `profile` (
@@ -378,10 +377,10 @@ CREATE TABLE IF NOT EXISTS `subject_enrollment` (
   `student_id` int(11) NOT NULL DEFAULT '0',
   `subject_id` int(11) NOT NULL DEFAULT '0',
   `schedule_id` int(11) NOT NULL DEFAULT '0',
-  `status` enum('Passed','Failed') DEFAULT NULL,
+  `status` varchar(50) DEFAULT NULL,
   `academic_year` int(11) NOT NULL DEFAULT '0',
   `semester` enum('1st','2nd') NOT NULL,
-  `grade` decimal(5,5) DEFAULT NULL,
+  `grade` decimal(3,2) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `FK__students` (`student_id`),
   KEY `FK__subject` (`subject_id`),

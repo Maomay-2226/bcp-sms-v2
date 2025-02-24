@@ -136,6 +136,12 @@ class Students extends \yii\db\ActiveRecord
         return $this->hasMany(Enrollments::class, ['student_id' => 'id']);
     }
 
+    public function getActiveEnrollment()
+    {
+        $enrollment = Enrollments::find()->where(['student_id' => $this->id, 'status' => 'Active'])->orderBy(['id' => SORT_DESC])->one();
+        return $enrollment;
+    }
+
     public function getSubjectEnrollment()
     {
         return $this->hasMany(SubjectEnrollment::class, ['student_id' => 'id']);

@@ -7,7 +7,7 @@ use yii\widgets\ActiveForm;
 /** @var app\models\SubjectEnrollment $model */
 /** @var yii\widgets\ActiveForm $form */
 ?>
-<div class="enrollments-form">
+<div class="subject-enrollment-form">
     <?php $form = ActiveForm::begin(); ?>
     <div class="row">
         <div class="col-md-6">
@@ -16,35 +16,42 @@ use yii\widgets\ActiveForm;
                 </div>
                 <div class="card-body">
                     <table class="table table-bordered table-sm mb-3">
-                        <tr class=""> 
-                            <th>Academic Year</th>
-                            <td><?= ($model->academic_year) ? $model->academic_year : '-'  ?></td>
+                        <tr>
+                            <th>Student Name</th>
+                            <td><?= $model->student->fullname ?></td>
                         </tr>
                         <tr>
-                            <th>Year & Semester</th>
-                            <td>
-                                <?php 
-                                    $year_arr = [1=>'1st',2=>'2nd',3=>'3rd',4=>'4th',5=>'5th'];
-                                    echo ($model->section) ? '<b>'.$year_arr[$model->section->year].'</b> Year, <b>'.$model->semester.'</b> Semester' : '-';
-                                ?>
-                            </td>
+                            <th>Subject</th>
+                            <td><?= $model->subject->subject_name ?></td>
                         </tr>
                         <tr>
-                            <th>Course</th>
-                            <td><?= ($model->course) ? $model->course->course_code : '-' ?></td>
+                            <th>Code</th>
+                            <td><?= $model->subject->subject_code ?></td>
                         </tr>
                         <tr>
-                            <th>Major</th>
-                            <td><?= ($model->major) ? $model->major->description : '-' ?></td>
+                            <th>Unit</th>
+                            <td><?= $model->subject->credits ?></td>
                         </tr>
                         <tr>
-                            <th>Section</th>
-                            <td><?= ($model->section) ? $model->section->code : '-' ?></td>
+                            <th>Day</th>
+                            <td><?= $model->schedule->day_of_week ?></td>
+                        </tr>
+                        <tr>
+                            <th>Time</th>
+                            <td><?= date('h:i A', strtotime($model->schedule->start_time)) . ' - ' . date('h:i A', strtotime($model->schedule->end_time)) ?></td>
+                        </tr>
+                        <tr>
+                            <th>Room</th>
+                            <td><?= $model->schedule->room_no ?></td>
+                        </tr>
+                        <tr>
+                            <th>Instructor</th>
+                            <td><?= $model->schedule->instructor->fullname ?></td>
                         </tr>
                     </table>
                     <div class="row">
                         <div class="col-md-6">
-                            <?= $form->field($model, 'grading_status')->dropDownList([ 'Passed' => 'Passed', 'Failed' => 'Failed', ], ['prompt' => 'Select']) ?>
+                            <?= $form->field($model, 'status')->dropDownList([ 'Passed' => 'Passed', 'Failed' => 'Failed', ], ['prompt' => 'Select']) ?>
                         </div>
                         <div class="col-md-6">
                             <?= $form->field($model, 'grade')->textInput(['maxlength' => true]) ?>
