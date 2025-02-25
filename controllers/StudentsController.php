@@ -142,6 +142,7 @@ class StudentsController extends Controller
             $model->semester = $semester;
             $model->schedule_id = $schedule_id;
             $model->save();
+            Yii::$app->session->setFlash('success', 'Schedule has been added.');
         }
         
         return $this->redirect(['view', 'id' => $student_id]);
@@ -174,13 +175,16 @@ class StudentsController extends Controller
         $check_active = Enrollments::find()->where(['status' => 'Active', 'student_id' => $student_id])->one();
         if($check_active){
             $model = $check_active;
+            $msg = 'updated';
         }
         else{
+            $msg = 'added';
             $model = new Enrollments();
         }
 
         if ($this->request->isPost) {
             if ($model->load($this->request->post()) && $model->save()) {
+                Yii::$app->session->setFlash('success', 'Enrollment has been '.$msg.'.');
                 return $this->redirect(['view', 'id' => $model->student_id]);
             }
         } else {

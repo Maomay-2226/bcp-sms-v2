@@ -1,15 +1,15 @@
 <?php
 
-namespace app\models;
+namespace app\models\search;
 
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use app\models\ModuleGrant;
+use app\models\ModuleList;
 
 /**
- * ModuleGrantSearch represents the model behind the search form of `app\models\ModuleGrant`.
+ * ModuleListSearch represents the model behind the search form of `app\models\ModuleList`.
  */
-class ModuleGrantSearch extends ModuleGrant
+class ModuleListSearch extends ModuleList
 {
     /**
      * {@inheritdoc}
@@ -17,8 +17,8 @@ class ModuleGrantSearch extends ModuleGrant
     public function rules()
     {
         return [
-            [['id', 'student_id'], 'integer'],
-            [['module_description', 'date_open', 'date_close', 'is_requested', 'is_approved', 'module_list_id'], 'safe'],
+            [['id', 'subject_id'], 'integer'],
+            [['description', 'instruction', 'link', 'title'], 'safe'],
         ];
     }
 
@@ -40,7 +40,7 @@ class ModuleGrantSearch extends ModuleGrant
      */
     public function search($params)
     {
-        $query = ModuleGrant::find();
+        $query = ModuleList::find();
 
         // add conditions that should always apply here
 
@@ -59,14 +59,13 @@ class ModuleGrantSearch extends ModuleGrant
         // grid filtering conditions
         $query->andFilterWhere([
             'id' => $this->id,
-            'module_list_id' => $this->module_list_id,
-            'date_open' => $this->date_open,
-            'date_close' => $this->date_close,
-            'student_id' => $this->student_id,
+            'subject_id' => $this->subject_id,
         ]);
 
-        $query->andFilterWhere(['like', 'is_requested', $this->is_requested])
-            ->andFilterWhere(['like', 'is_approved', $this->is_approved]);
+        $query->andFilterWhere(['like', 'description', $this->description])
+            ->andFilterWhere(['like', 'instruction', $this->instruction])
+            ->andFilterWhere(['like', 'link', $this->link])
+            ->andFilterWhere(['like', 'title', $this->title]);
 
         return $dataProvider;
     }

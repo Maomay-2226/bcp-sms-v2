@@ -201,7 +201,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                                 ],['class' => 'btn btn-xs btn-primary']);
                                             ?>
                                         </td>
-                                    <?php else : ?>
+                                    <?php elseif($modelEnrollment->id) : ?>
                                         <td class="text-center">
                                             <?php
                                                 echo Html::a('<i class="fa fa-edit"></i>', [
@@ -209,6 +209,8 @@ $this->params['breadcrumbs'][] = $this->title;
                                                 ],['class' => 'btn btn-xs btn-primary']);
                                             ?>
                                         </td>
+                                    <?php else : ?>
+                                        <td class="text-center">-</td>
                                     <?php endif; ?>
                                 </tr>
                             </table>
@@ -349,7 +351,13 @@ $this->params['breadcrumbs'][] = $this->title;
                             <div class="modal fade subject-modal" tabindex="-1" role="dialog" aria-labelledby="subjectModal" aria-hidden="true">
                                 <div class="modal-dialog modal-xl">
                                     <div class="modal-content p-3">
-                                    <h5><b>Subject Schedule Selection</b></h5>
+                                    <h5>
+                                        <b>Subject Schedule Selection</b>
+                                        <?php
+                                            echo Html::a('+ Add Subject', ['/subject/index'],['class' => 'btn btn-sm btn-secondary mr-1']);
+                                            echo Html::a('+ Add Schedule', ['/schedule/index'],['class' => 'btn btn-sm btn-secondary']);
+                                        ?>
+                                    </h5>
                                     <table class="table table-striped table-bordered text-center ">
                                         <tr class="bg-info">
                                             <th>Subject</th>
@@ -360,7 +368,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                             <th>Room</th>
                                             <th>Action</th>
                                         </tr>
-                                        <?php foreach ($modelSchedules as $key => $value) { ?>
+                                        <?php if ($modelSchedules) { foreach ($modelSchedules as $key => $value) { ?>
                                             <tr>
                                                 <td><?= $value->subject->subject_name ?></td>
                                                 <td><?= $value->instructor->fullname ?></td>
@@ -381,7 +389,11 @@ $this->params['breadcrumbs'][] = $this->title;
                                                 ?>
                                                 </td>
                                             </tr>
-                                        <?php } ?>
+                                        <?php } } else { ?>
+                                            <tr>
+                                                <td colspan="7"></td>
+                                            </tr>
+                                        <?php }  ?>
                                     </table>
                                     </div>
                                 </div>

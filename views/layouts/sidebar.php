@@ -55,7 +55,15 @@
                             ['label' => 'Announcement',  'icon' => 'bullhorn', 'url' => ['/announcement/index'], 'visible' => !Yii::$app->user->isGuest],
                             ['label' => 'Concerns',  'icon' => 'envelope-square', 'url' => ['/concern/index'], 'visible' => !Yii::$app->user->isGuest],
                             ['label' => 'Events',  'icon' => 'calendar-check', 'url' => ['/event/index'], 'visible' => !Yii::$app->user->isGuest],
-                            ['label' => 'Module Grants',  'icon' => 'book', 'url' => ['/module-grant/index'], 'visible' => !Yii::$app->user->isGuest],
+                            [
+                                'label' => 'Module Managament',
+                                'icon' => 'book',
+                                'visible' => !Yii::$app->user->isGuest,
+                                'items' => [
+                                    ['label' => 'List',  'icon' => 'list', 'url' => ['/module-list/index'], 'visible' => !Yii::$app->user->isGuest],
+                                    ['label' => 'Requests',  'icon' => 'envelope-open', 'url' => ['/module-grant/index'], 'visible' => !Yii::$app->user->isGuest],
+                                ]
+                            ],
                         ]
                     ],
                     [

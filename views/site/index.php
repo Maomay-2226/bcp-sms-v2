@@ -1,6 +1,8 @@
 <?php
 $this->title = 'Dashboard';
 $this->params['breadcrumbs'] = [['label' => $this->title]];
+$active_perc = ($active_students != 0) ? floatval((intval($students) / intval($active_students)) * 100) : 0;
+$enrollment_perc = ($active_enrollment != 0) ? floatval((intval($students) / intval($active_enrollment)) * 100) : 0;
 ?>
 <div class="">
     <h5>Dashboard</h5>
@@ -8,35 +10,35 @@ $this->params['breadcrumbs'] = [['label' => $this->title]];
     <div class="row">
         <div class="col-md-4 col-sm-6 col-12">
             <?= \hail812\adminlte\widgets\InfoBox::widget([
-                'text' => 'Active Students',
-                'number' => '89,999',
+                'text' => 'Registered Students',
+                'number' => number_format($students),
                 'icon' => 'fa fa-user-plus',
                 'progress' => [
-                    'width' => '89%',
+                    'width' => '100%',
                     'description' => 'For Academic Year <b>'.date('Y').'</b>'
                 ]
             ]) ?>
         </div>
         <div class="col-md-4 col-sm-6 col-12">
             <?= \hail812\adminlte\widgets\InfoBox::widget([
-                'text' => 'Inactive Students',
-                'number' => '11,001',
-                'theme' => 'warning',
-                'icon' => 'fa fa-user-times',
+                'text' => 'Active Students',
+                'number' => number_format($active_students),
+                // 'theme' => 'warning',
+                'icon' => 'fa fa-users',
                 'progress' => [
-                    'width' => '11%',
+                    'width' => ''.number_format($active_perc,2).'%',
                     'description' => 'For Academic Year <b>'.date('Y').'</b>'
                 ]
             ]) ?>
         </div>
         <div class="col-md-4 col-sm-6 col-12">
             <?php $infoBox = \hail812\adminlte\widgets\InfoBox::begin([
-                'text' => 'Enrolled',
-                'number' => '100,000',
-                'theme' => 'success',
-                'icon' => 'fa fa-users',
+                'text' => 'Active Enrollment',
+                'number' => number_format($active_enrollment),
+                // 'theme' => 'success',
+                'icon' => 'fa fa-address-book',
                 'progress' => [
-                    'width' => '100%',
+                    'width' => ''.number_format($enrollment_perc,2).'%',
                     'description' => 'For Academic Year <b>'.date('Y').'</b>'
                 ]
             ]) ?>

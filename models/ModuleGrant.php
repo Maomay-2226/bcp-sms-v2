@@ -33,11 +33,10 @@ class ModuleGrant extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['module_description', 'condition_description', 'student_id'], 'required'],
+            [['module_list_id', 'student_id'], 'required'],
             [['date_open', 'date_close'], 'safe'],
             [['is_requested', 'is_approved'], 'string'],
             [['student_id'], 'integer'],
-            [['module_description', 'condition_description', 'module_link'], 'string', 'max' => 255],
         ];
     }
 
@@ -48,14 +47,28 @@ class ModuleGrant extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-            'module_description' => 'Module Description',
-            'condition_description' => 'Condition Description',
+            'module_list_id' => 'Module Title',
             'date_open' => 'Date Open',
             'date_close' => 'Date Close',
             'is_requested' => 'Is Requested',
             'is_approved' => 'Is Approved',
             'student_id' => 'Student ID',
-            'module_link' => 'Module Link',
+            'moduleList.subject.subject_name' => 'Subject'
         ];
+    }
+    
+    public function getModuleList()
+    {
+        return $this->hasOne(ModuleList::class, ['id' => 'module_list_id']);
+    }
+
+    public function getModuleLists()
+    {
+        $query = ModuleList::find()->all();
+        $arr = [];
+        foreach ($query as $key => $value) {
+            $arr[$value->id] = $value->subject->subject_code.': '.$value->title;
+        }
+        return $arr;
     }
 }

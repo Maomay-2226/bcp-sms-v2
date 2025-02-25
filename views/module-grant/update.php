@@ -5,9 +5,9 @@ use yii\helpers\Html;
 /** @var yii\web\View $this */
 /** @var app\models\ModuleGrant $model */
 
-$this->title = 'Update: ' . $model->module_description;
-$this->params['breadcrumbs'][] = ['label' => 'Module Grants', 'url' => ['index']];
-$this->params['breadcrumbs'][] = ['label' => $model->module_description, 'url' => ['view', 'id' => $model->id]];
+$this->title = 'Update Request: ' . $model->moduleList->title;
+$this->params['breadcrumbs'][] = ['label' => 'Requests', 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => $model->moduleList->title, 'url' => ['view', 'id' => $model->id]];
 $this->params['breadcrumbs'][] = 'Update';
 ?>
 <div class="module-grant-update">

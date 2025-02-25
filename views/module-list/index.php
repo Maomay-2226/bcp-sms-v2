@@ -1,26 +1,25 @@
 <?php
 
-use app\models\ModuleGrant;
+use app\models\ModuleList;
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\grid\ActionColumn;
 use yii\grid\GridView;
-use yii\widgets\Pjax;
+
 /** @var yii\web\View $this */
-/** @var app\models\ModuleGrantSearch $searchModel */
+/** @var app\models\search\ModuleListSearch $searchModel */
 /** @var yii\data\ActiveDataProvider $dataProvider */
 
-$this->title = 'Requests';
+$this->title = 'Modules';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
-<div class="module-grant-index">
+<div class="module-list-index">
 
     <h5>
         <?= Html::encode($this->title) ?>
         <?= Html::a('<i class="fa fa-plus"></i> Add', ['create'], ['class' => 'btn btn-info btn-sm']) ?>
     </h5>
 
-    <?php Pjax::begin(); ?>
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
 
     <?= GridView::widget([
@@ -28,19 +27,25 @@ $this->params['breadcrumbs'][] = $this->title;
         // 'filterModel' => $searchModel,
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
+            'title',
             [
-                'attribute' => 'module_list_id',
-                'value' => 'moduleList.title',
+                'attribute' => 'subject_id',
+                'value' => 'subject.subject_name',
             ],
-            // 'moduleList.subject.subject_name',
-            'student_id',
-            'date_open:date',
-            'date_close:date',
-            'is_requested',
-            'is_approved',
+            [
+                'attribute' => 'link',
+                'format' => 'raw',
+                'value' => function ($model) {
+                    $module_link = $model->link;
+                    if (!preg_match("~^(?:f|ht)tps?://~i", $model->link)) {
+                        $module_link = "https://" . $model->link;
+                    }
+                    return '<a href="'.$module_link.'" target="_blank" id="module_link">'.$module_link.'</a>';
+                },
+            ],
             [
                 'class' => ActionColumn::className(),
-                'urlCreator' => function ($action, ModuleGrant $model, $key, $index, $column) {
+                'urlCreator' => function ($action, ModuleList $model, $key, $index, $column) {
                     return Url::toRoute([$action, 'id' => $model->id]);
                 },
                 'template' => '{view} {update} | {delete}', // Customize which actions to show
@@ -73,6 +78,5 @@ $this->params['breadcrumbs'][] = $this->title;
         ],
     ]); ?>
 
-    <?php Pjax::end(); ?>
 
 </div>

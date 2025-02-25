@@ -13,9 +13,7 @@ use yii\bootstrap4\ActiveForm;
             <div class="col-md-6">
             <?php $form = ActiveForm::begin(); ?>
 
-            <?= $form->field($model, 'module_description')->textInput(['maxlength' => true]) ?>
-
-            <?= $form->field($model, 'condition_description')->textInput(['maxlength' => true]) ?>
+            <?= $form->field($model, 'module_list_id')->dropDownList($model->moduleLists, ['prompt' => 'Select Subject']) ?>
 
             <div class="row">
                 <div class="col-md-6">
@@ -36,16 +34,14 @@ use yii\bootstrap4\ActiveForm;
 
             <div class="row">
                 <div class="col-md-6">
-                    <?= $form->field($model, 'is_requested')->dropDownList([ 'No' => 'No', 'Yes' => 'Yes', ], ['prompt' => '']) ?>
+                    <?= $form->field($model, 'is_requested')->dropDownList([ 'No' => 'No', 'Yes' => 'Yes', ], ['prompt' => 'Select', 'value' => 'Yes']) ?>
                 </div>
                 <div class="col-md-6">
-                    <?= $form->field($model, 'is_approved')->dropDownList([ 'No' => 'No', 'Yes' => 'Yes', ], ['prompt' => '']) ?>
+                    <?= $form->field($model, 'is_approved')->dropDownList([ 'No' => 'No', 'Yes' => 'Yes', ], ['prompt' => 'Select']) ?>
                 </div>
             </div>
 
             <?= $form->field($model, 'student_id')->textInput() ?>
-
-            <?= $form->field($model, 'module_link')->textInput(['maxlength' => true]) ?>
 
             <div class="form-group">
                 <?= Html::submitButton('Save', ['class' => 'btn btn-success']) ?>

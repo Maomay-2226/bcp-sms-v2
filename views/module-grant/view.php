@@ -6,8 +6,8 @@ use yii\widgets\DetailView;
 /** @var yii\web\View $this */
 /** @var app\models\ModuleGrant $model */
 
-$this->title = $model->module_description;
-$this->params['breadcrumbs'][] = ['label' => 'Module Grants', 'url' => ['index']];
+$this->title = $model->moduleList->title;
+$this->params['breadcrumbs'][] = ['label' => 'Requests', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 \yii\web\YiiAsset::register($this);
 ?>
@@ -34,14 +34,15 @@ $this->params['breadcrumbs'][] = $this->title;
                 'options' => ['class' => 'table table-bordered detail-view', 'style' => 'background-color: white'],
                 'attributes' => [
                     // 'id',
-                    'module_description',
-                    'condition_description',
+                    'moduleList.title',
+                    'moduleList.subject.subject_name',
+                    // 'condition_description',
                     'date_open:date',
                     'date_close:date',
                     'is_requested',
                     'is_approved',
                     'student_id',
-                    'module_link',
+                    // 'module_link',
                 ],
             ]) ?>
         </div>
