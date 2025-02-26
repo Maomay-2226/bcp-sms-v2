@@ -2,6 +2,7 @@
 
 namespace app\controllers;
 
+use Yii;
 use app\models\Concern;
 use app\models\ConcernSearch;
 use yii\web\Controller;
@@ -25,6 +26,7 @@ class ConcernController extends Controller
                     'class' => VerbFilter::className(),
                     'actions' => [
                         'delete' => ['POST'],
+                        'delete-submitted' => ['POST'],
                     ],
                 ],
             ]
@@ -60,6 +62,16 @@ class ConcernController extends Controller
         ]);
     }
 
+    public function actionSubmitted()
+    {
+        $student_id = substr(Yii::$app->user->identity->username, 1);
+        $model = Concern::find()->where(['student_id' => $student_id])->all();
+
+        return $this->render('submitted', [
+            'model' => $model,
+        ]);
+    }
+
     /**
      * Creates a new Concern model.
      * If creation is successful, the browser will be redirected to the 'view' page.
@@ -82,13 +94,27 @@ class ConcernController extends Controller
         ]);
     }
 
-    /**
-     * Updates an existing Concern model.
-     * If update is successful, the browser will be redirected to the 'view' page.
-     * @param int $id ID
-     * @return string|\yii\web\Response
-     * @throws NotFoundHttpException if the model cannot be found
-     */
+    public function actionCreateNew()
+    {
+        $model = new Concern();
+        $student_id = substr(Yii::$app->user->identity->username, 1);
+        $model->student_id = $student_id;
+        $model->date = date('Y-m-d');
+
+        if ($this->request->isPost) {
+            if ($model->load($this->request->post()) && $model->save()) {
+                Yii::$app->session->setFlash('success', 'Concern successfully submitted');
+                return $this->redirect(['submitted']);
+            }
+        } else {
+            $model->loadDefaultValues();
+        }
+
+        return $this->render('create-new', [
+            'model' => $model,
+        ]);
+    }
+
     public function actionUpdate($id)
     {
         $model = $this->findModel($id);
@@ -102,27 +128,33 @@ class ConcernController extends Controller
         ]);
     }
 
-    /**
-     * Deletes an existing Concern model.
-     * If deletion is successful, the browser will be redirected to the 'index' page.
-     * @param int $id ID
-     * @return \yii\web\Response
-     * @throws NotFoundHttpException if the model cannot be found
-     */
+    public function actionUpdateSubmitted($id)
+    {
+        $model = $this->findModel($id);
+
+        if ($this->request->isPost && $model->load($this->request->post()) && $model->save()) {
+            return $this->redirect(['submitted']);
+        }
+
+        return $this->render('update-submitted', [
+            'model' => $model,
+        ]);
+    }
+
     public function actionDelete($id)
     {
         $this->findModel($id)->delete();
-
+        Yii::$app->session->setFlash('danger', 'Concern successfully deleted');
         return $this->redirect(['index']);
     }
 
-    /**
-     * Finds the Concern model based on its primary key value.
-     * If the model is not found, a 404 HTTP exception will be thrown.
-     * @param int $id ID
-     * @return Concern the loaded model
-     * @throws NotFoundHttpException if the model cannot be found
-     */
+    public function actionDeleteSubmitted($id)
+    {
+        $this->findModel($id)->delete();
+        Yii::$app->session->setFlash('danger', 'Concern successfully deleted');
+        return $this->redirect(['index']);
+    }
+
     protected function findModel($id)
     {
         if (($model = Concern::findOne(['id' => $id])) !== null) {

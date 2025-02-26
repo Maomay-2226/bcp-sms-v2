@@ -6,7 +6,7 @@ use yii\widgets\DetailView;
 /** @var yii\web\View $this */
 /** @var app\models\Announcement $model */
 
-$this->title = $model->announcement;
+$this->title = 'ID: '.$model->id;
 $this->params['breadcrumbs'][] = ['label' => 'Announcements', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 \yii\web\YiiAsset::register($this);
@@ -32,7 +32,10 @@ $this->params['breadcrumbs'][] = $this->title;
                 'model' => $model,
                 'options' => ['class' => 'table table-bordered detail-view', 'style' => 'background-color: white'],
                 'attributes' => [
-                    'announcement:ntext',
+                    [
+                        'attribute' => 'announcement',
+                        'format' => 'raw',
+                    ],
                     [
                         'attribute' => 'date_to_post',
                         'value' => function($model){

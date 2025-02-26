@@ -53,6 +53,20 @@ class EnrollmentsController extends Controller
         ]);
     }
 
+    public function actionUpdateStatus($id)
+    {
+        $model = $this->findModel($id);
+
+        if ($this->request->isPost && $model->load($this->request->post()) && $model->save()) {
+            Yii::$app->session->setFlash('success', 'Enrollment status has been updated');
+            return $this->redirect(['/students/view', 'id' => $model->student_id]);
+        }
+
+        return $this->render('update', [
+            'model' => $model,
+        ]);
+    }
+
     /**
      * Deletes an existing Enrollments model.
      * If deletion is successful, the browser will be redirected to the 'index' page.

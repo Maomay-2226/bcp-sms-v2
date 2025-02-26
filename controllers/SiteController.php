@@ -11,6 +11,9 @@ use app\models\LoginForm;
 use app\models\ContactForm;
 use app\models\Students;
 use app\models\Enrollments;
+use app\models\Announcement;
+use app\models\Event;
+use app\models\Concern;
 
 class SiteController extends Controller
 {
@@ -66,10 +69,24 @@ class SiteController extends Controller
         $students = Students::find()->count();
         $active_students = Students::find()->where(['status' => 'Active'])->count();
         $active_enrollment = Enrollments::find()->where(['status' => 'Active'])->count();
-        return $this->render('index', [
+        $page = !Yii::$app->user->isGuest && Yii::$app->user->identity->username === 'admin' ? 'index' : 'index-student';
+
+        $activeAnnouncements = Announcement::find()
+                            ->where(['<=', 'date_to_post', date('Y-m-d H:i:s')])
+                            ->andWhere(['>=', 'date_to_expire', date('Y-m-d H:i:s')])
+                            ->all();
+
+        $activeEvents = Event::find()->orderBy(['date' => SORT_DESC])->all();
+        $student_id = substr(Yii::$app->user->identity->username, 1);
+        $activeConcerns = Concern::find()->where(['student_id' => $student_id])->orderBy(['date' => SORT_DESC])->all();
+
+        return $this->render($page, [
             'students' => $students,
             'active_students' => $active_students,
             'active_enrollment' => $active_enrollment,
+            'activeAnnouncements' => $activeAnnouncements,
+            'activeEvents' => $activeEvents,
+            'activeConcerns' => $activeConcerns,
         ]);
     }
 

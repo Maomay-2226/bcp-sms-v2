@@ -2,11 +2,16 @@
 
 namespace app\controllers;
 
+use Yii;
 use app\models\ModuleList;
+use app\models\ModuleGrant;
+use app\models\SubjectEnrollment;
 use app\models\search\ModuleListSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\helpers\ArrayHelper;
+
 
 /**
  * ModuleListController implements the CRUD actions for ModuleList model.
@@ -82,13 +87,6 @@ class ModuleListController extends Controller
         ]);
     }
 
-    /**
-     * Updates an existing ModuleList model.
-     * If update is successful, the browser will be redirected to the 'view' page.
-     * @param int $id ID
-     * @return string|\yii\web\Response
-     * @throws NotFoundHttpException if the model cannot be found
-     */
     public function actionUpdate($id)
     {
         $model = $this->findModel($id);
@@ -102,17 +100,23 @@ class ModuleListController extends Controller
         ]);
     }
 
-    /**
-     * Deletes an existing ModuleList model.
-     * If deletion is successful, the browser will be redirected to the 'index' page.
-     * @param int $id ID
-     * @return \yii\web\Response
-     * @throws NotFoundHttpException if the model cannot be found
-     */
+    public function actionStudent(){
+        $student_id = substr(Yii::$app->user->identity->username, 1);
+        $enrolled_subjects = SubjectEnrollment::find()->where(['student_id' => $student_id])->all();
+        $subject_ids = ArrayHelper::getColumn($enrolled_subjects, 'subject_id');
+        $module_grants = ModuleGrant::find()->where(['student_id' => $student_id])->indexBy('module_list_id')->all();
+
+        return $this->render('student', [
+            'enrolled_subjects' => $enrolled_subjects,
+            'module_grants' => $module_grants,
+        ]);
+
+        return $this->redirect(['student']);
+    }
+
     public function actionDelete($id)
     {
         $this->findModel($id)->delete();
-
         return $this->redirect(['index']);
     }
 

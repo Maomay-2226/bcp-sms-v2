@@ -2,6 +2,7 @@
 
 namespace app\controllers;
 
+use Yii;
 use app\models\ModuleGrant;
 use app\models\ModuleGrantSearch;
 use yii\web\Controller;
@@ -25,6 +26,8 @@ class ModuleGrantController extends Controller
                     'class' => VerbFilter::className(),
                     'actions' => [
                         'delete' => ['POST'],
+                        'request' => ['POST'],
+                        'approve' => ['POST'],
                     ],
                 ],
             ]
@@ -82,6 +85,30 @@ class ModuleGrantController extends Controller
         ]);
     }
 
+    public function actionRequest($module_id)
+    {
+        $model = new ModuleGrant();
+        $student_id = substr(Yii::$app->user->identity->username, 1);
+
+        $model->module_list_id = $module_id;
+        $model->is_requested = 'Yes';
+        $model->is_approved = 'No';
+        $model->student_id = $student_id;
+        $model->save(false);
+
+        Yii::$app->session->setFlash('success', 'Grant of access successfully requested');
+        return $this->redirect(['/module-list/student']);
+    }
+
+    public function actionApprove($id)
+    {
+        $model = $this->findModel($id);
+        $model->is_approved = 'Yes';
+        $model->save(false);
+        Yii::$app->session->setFlash('success', 'Grant of access successfully approved');
+        return $this->redirect(['index']);
+    }
+
     /**
      * Updates an existing ModuleGrant model.
      * If update is successful, the browser will be redirected to the 'view' page.
@@ -101,6 +128,7 @@ class ModuleGrantController extends Controller
             'model' => $model,
         ]);
     }
+    
 
     /**
      * Deletes an existing ModuleGrant model.

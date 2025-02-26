@@ -22,7 +22,8 @@
         "dektrium/yii2-user": "^0.9.3",
         "endroid/qr-code": "^6.0",
         "nemmo/yii2-attachments": "~1.0.1",
-        "kartik-v/yii2-widget-fileinput": "@dev"
+        "kartik-v/yii2-widget-fileinput": "@dev",
+        "2amigos/yii2-tinymce-widget": "~1.1"
     },
     "require-dev": {
         "yiisoft/yii2-debug": "~2.1.0",

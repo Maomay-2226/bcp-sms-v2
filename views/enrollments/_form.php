@@ -41,14 +41,30 @@ use yii\widgets\ActiveForm;
                             <th>Section</th>
                             <td><?= ($model->section) ? $model->section->code : '-' ?></td>
                         </tr>
+                        <?php if(Yii::$app->controller->action->id == 'update-status') :?>
+                        <tr>
+                            <th>Grading Status</th>
+                            <td><?= ($model->grading_status) ? $model->grading_status : '-' ?></td>
+                        </tr>
+                        <tr>
+                            <th>Grade</th>
+                            <td><?= ($model->grade) ? $model->grade : '-' ?></td>
+                        </tr>
+                        <?php endif; ?>
                     </table>
                     <div class="row">
-                        <div class="col-md-6">
-                            <?= $form->field($model, 'grading_status')->dropDownList([ 'Passed' => 'Passed', 'Failed' => 'Failed', ], ['prompt' => 'Select']) ?>
-                        </div>
-                        <div class="col-md-6">
-                            <?= $form->field($model, 'grade')->textInput(['maxlength' => true]) ?>
-                        </div>
+                        <?php if(Yii::$app->controller->action->id == 'update') :?>
+                            <div class="col-md-6">
+                                <?= $form->field($model, 'grading_status')->dropDownList([ 'Passed' => 'Passed', 'Failed' => 'Failed', ], ['prompt' => 'Select']) ?>
+                            </div>
+                            <div class="col-md-6">
+                                <?= $form->field($model, 'grade')->textInput(['maxlength' => true]) ?>
+                            </div>
+                        <?php elseif(Yii::$app->controller->action->id == 'update-status') :?>
+                            <div class="col-md-12">
+                                <?= $form->field($model, 'status')->dropDownList([ 'Active' => 'Active', 'Inactive' => 'Inactive', ], ['prompt' => 'Select']) ?>
+                            </div>
+                        <?php endif; ?>
                     </div>
 
                     <div class="form-group">

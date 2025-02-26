@@ -32,6 +32,7 @@ class ModuleList extends \yii\db\ActiveRecord
     {
         return [
             [['description', 'instruction', 'link', 'subject_id'], 'required'],
+            [['date_open', 'date_close'], 'safe'],
             [['description', 'instruction'], 'string'],
             [['link', 'title'], 'string', 'max' => 255],
             [['subject_id'], 'integer'],
@@ -48,6 +49,8 @@ class ModuleList extends \yii\db\ActiveRecord
             'title' => 'Title',
             'description' => 'Description',
             'instruction' => 'Instruction',
+            'date_open' => 'Date Open',
+            'date_close' => 'Date Close',
             'subject_id' => 'Subject',
             'link' => 'Link',
         ];

@@ -17,6 +17,20 @@ use yii\bootstrap4\ActiveForm;
                     <?= $form->field($model, 'title')->textInput() ?>
                 </div>
                 <div class="col-md-6">
+                    <?= $form->field($model, 'date_open')->textInput([
+                        'type' => 'date',
+                        'placeholder' => 'Enter Date Open',
+                        'required' => true // Optional: Makes the field required
+                    ]) ?>
+                </div>
+                <div class="col-md-6">
+                    <?= $form->field($model, 'date_close')->textInput([
+                        'type' => 'date',
+                        'placeholder' => 'Enter Date Close',
+                        'required' => true // Optional: Makes the field required
+                    ]) ?>
+                </div>
+                <div class="col-md-6">
                     <?= $form->field($model, 'subject_id')->dropDownList($model->subjects, ['prompt' => 'Select Subject']) ?>
                 </div>
                 <div class="col-md-6">

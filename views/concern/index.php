@@ -31,7 +31,10 @@ $this->params['breadcrumbs'][] = $this->title;
 
             // 'id',
             'student_id',
-            'concern_type_id',
+            [
+                'attribute' => 'concern_type_id',
+                'value' => 'concernType.description',
+            ],
             'message:ntext',
             'date',
             [

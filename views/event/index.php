@@ -32,7 +32,10 @@ $this->params['breadcrumbs'][] = $this->title;
             // 'id',
             'title',
             'location',
-            'description:ntext',
+            [
+                'attribute' => 'description',
+                'format' => 'raw',
+            ],
             'date',
             [
                 'class' => ActionColumn::className(),

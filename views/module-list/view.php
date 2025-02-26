@@ -37,6 +37,8 @@ $this->params['breadcrumbs'][] = $this->title;
                         'attribute' => 'subject_id',
                         'value' => $model->subject->subject_name,
                     ],
+                    'date_open:date',
+                    'date_close:date',
                     'description:ntext',
                     'instruction:ntext',
                     [

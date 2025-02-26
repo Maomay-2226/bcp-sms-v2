@@ -32,6 +32,8 @@ $this->params['breadcrumbs'][] = $this->title;
                 'attribute' => 'subject_id',
                 'value' => 'subject.subject_name',
             ],
+            'date_open:date',
+            'date_close:date',
             [
                 'attribute' => 'link',
                 'format' => 'raw',

@@ -84,4 +84,9 @@ class SubjectEnrollment extends \yii\db\ActiveRecord
     {
         return $this->hasOne(Schedule::class, ['id' => 'schedule_id']);
     }
+
+    public function getModuleLists()
+    {
+        return $this->hasMany(ModuleList::class, ['subject_id' => 'subject_id']);
+    }
 }

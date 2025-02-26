@@ -14,13 +14,19 @@ use yii\bootstrap4\ActiveForm;
 /** @var yii\web\View $this */
 /** @var app\models\Students $model */
 
+$is_admin = false;
+if(!Yii::$app->user->isGuest && Yii::$app->user->identity->username == 'admin'){
+    $is_admin = true;
+}
 $this->title = $model->fullname;
+if($is_admin){
 $this->params['breadcrumbs'][] = ['label' => 'Students', 'url' => ['index']];
+}
 $this->params['breadcrumbs'][] = $this->title;
 \yii\web\YiiAsset::register($this);
 ?>
 <div class="students-view">
-
+    <?php if($is_admin) : ?>
     <h5>
         <?= Html::a('<i class="fa fa-edit"></i> Update', ['update', 'id' => $model->id], ['class' => 'btn btn-primary btn-sm']) ?>
         <?= Html::a('<i class="fa fa-trash"></i> Delete', ['delete', 'id' => $model->id], [
@@ -30,8 +36,8 @@ $this->params['breadcrumbs'][] = $this->title;
                 'method' => 'post',
             ],
         ]) ?>
-
     </h5>
+    <?php endif; ?>
     <div class="row">
         <div class="col-md-12">
             <div class="card mb-3">
@@ -97,7 +103,9 @@ $this->params['breadcrumbs'][] = $this->title;
                 <div class="col-md 12">
                     <div class="card mb-3">
                         <div class="card-header bg-info ">Submitted Requirements 
+                            <?php if($is_admin) : ?>
                             <button type="button" class="btn btn-dark btn-xs float-right" data-toggle="modal" data-target=".attachments-modal"><i class="fa fa-paperclip"></i></button>
+                            <?php endif; ?>
                         </div>
                         <div class="card-body">
                             <?php if($model->uploadedFiles) : ?>
@@ -169,8 +177,11 @@ $this->params['breadcrumbs'][] = $this->title;
                 <div class="col-md 12">
                     <div class="card mb-3">
                         <div class="card-header bg-info ">Active Enrollment Information
+                            <?php if($is_admin) : ?>
                             <button type="button" class="btn btn-dark btn-xs float-right" data-toggle="modal" data-target=".enrollment-modal"><i class="fa fa-<?= $enrolled_flag ? 'edit' : 'plus' ?>"></i></button>
-                        </div>
+                            <?php endif; ?>
+                            <button type="button" class="btn btn-dark btn-xs float-right mr-1" data-toggle="modal" data-target=".bd-example-modal-sm"><i class="fa fa-history"></i></button>
+                            </div>
                         <div class="card-body">
                             <table class="table table-bordered table-sm">
                                 <tr class="thead-light">
@@ -181,6 +192,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                     <th>Section</th>
                                     <th class="text-center">Status</th>
                                     <th class="text-center">Final Grade</th>
+                                    <th class="text-center">Enrollment Status</th>
                                 </tr>
                                 <tr>
                                     <?php 
@@ -195,30 +207,45 @@ $this->params['breadcrumbs'][] = $this->title;
                                     <?php if($modelEnrollment->grade) : ?>
                                         <td class="text-center">
                                             <?= $modelEnrollment->grade ?>
+                                            <?php if($is_admin) : ?>
                                             <?php
                                                 echo Html::a('<i class="fa fa-edit"></i>', [
                                                     'enrollments/update', 'id' => $modelEnrollment->id,
                                                 ],['class' => 'btn btn-xs btn-primary']);
                                             ?>
+                                            <?php endif; ?>
+                                        </td>
+                                        <td class="text-center">
+                                            <?= ($modelEnrollment->status) ? $modelEnrollment->status : '-' ?>
+                                            <?php if($is_admin) : ?>
+                                            <?php
+                                                echo Html::a('<i class="fa fa-edit"></i>', [
+                                                    'enrollments/update-status', 'id' => $modelEnrollment->id,
+                                                ],['class' => 'btn btn-xs btn-primary']);
+                                            ?>
+                                            <?php endif; ?>
                                         </td>
                                     <?php elseif($modelEnrollment->id) : ?>
                                         <td class="text-center">
+                                        <?php if($is_admin) : ?>
                                             <?php
                                                 echo Html::a('<i class="fa fa-edit"></i>', [
                                                     'enrollments/update', 'id' => $modelEnrollment->id,
                                                 ],['class' => 'btn btn-xs btn-primary']);
                                             ?>
+                                            <?php endif; ?>
                                         </td>
+                                        <td class="text-center">-</td>
                                     <?php else : ?>
                                         <td class="text-center">-</td>
+                                        <td class="text-center"><?= ($modelEnrollment->status) ? $modelEnrollment->status : '-' ?></td>
                                     <?php endif; ?>
                                 </tr>
                             </table>
-                            <!-- <button type="button" class="btn btn-primary btn-xs mt-2 btn-block" data-toggle="modal" data-target=".bd-example-modal-sm"><i class="fa fa-history"></i> <b>SEE ALL</b></button> -->
                             <div class="modal fade bd-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
                                 <div class="modal-dialog modal-xl">
                                     <div class="modal-content p-3">
-                                    <h5><b>Enrollment Information</b></h5>
+                                    <h5><b>Enrollment History</b></h5>
                                     <table class="table table-striped table-bordered">
                                         <tr class="bg-info">
                                             <th>Academic Year</th>
@@ -226,16 +253,37 @@ $this->params['breadcrumbs'][] = $this->title;
                                             <th>Course</th>
                                             <th>Major</th>
                                             <th>Section</th>
+                                            <th class="text-center">Status</th>
                                             <th class="text-center">Final Grade</th>
+                                            <th class="text-center">Enrollment Status</th>
                                         </tr>
-                                        <tr>
-                                            <td>-</td>
-                                            <td>-</td>
-                                            <td>-</td>
-                                            <td>-</td>
-                                            <td>-</td>
-                                            <td class="text-center">-</td>
-                                        </tr>
+                                        <?php if($model->enrollments) : ?>
+                                            <?php foreach ($model->enrollments as $key => $enrollment) : ?>
+                                            <tr>
+                                                <td><?= ($enrollment->academic_year) ? $enrollment->academic_year : '-'  ?></td>
+                                                <td><?= ($enrollment->section) ? '<b>'.$year_arr[$enrollment->section->year].'</b> Year, <b>'.$enrollment->semester.'</b> Semester' : '-' ?></td>
+                                                <td><?= ($enrollment->course) ? $enrollment->course->course_code : '-' ?></td>
+                                                <td><?= ($enrollment->major) ? $enrollment->major->description : '-' ?></td>
+                                                <td><?= ($enrollment->section) ? $enrollment->section->code : '-' ?></td>
+                                                <td class="text-center"><?= ($enrollment->grading_status) ? $enrollment->grading_status : '-' ?></td>
+                                                <td class="text-center"><?= ($enrollment->grade) ? $enrollment->grade : '-' ?></td>
+                                                <td class="text-center">
+                                                    <?= ($enrollment->status) ? $enrollment->status : '-' ?>
+                                                    <?php if($is_admin) : ?>
+                                                    <?php
+                                                        echo Html::a('<i class="fa fa-edit"></i>', [
+                                                            'enrollments/update-status', 'id' => $enrollment->id,
+                                                        ],['class' => 'btn btn-xs btn-primary']);
+                                                    ?>
+                                                    <?php endif; ?>
+                                                </td>
+                                            </tr>
+                                            <?php endforeach; ?>
+                                        <?php else : ?>
+                                            <tr class="">
+                                                <td colspan="8" class="text-center">No data found.</td>
+                                            </tr>
+                                        <?php endif; ?>
                                     </table>
                                     </div>
                                 </div>
@@ -301,10 +349,10 @@ $this->params['breadcrumbs'][] = $this->title;
                 <div class="col-md-12">
                     <div class="card mb-3">
                         <div class="card-header bg-info ">Enrolled Subject and Schedules
+                            <?php if($is_admin) : ?>                  
                             <button type="button" class="btn btn-dark btn-xs float-right" data-toggle="modal" data-target=".subject-modal"><i class="fa fa-plus"></i></button>
+                            <?php endif; ?>
                             <?php echo Html::a('<i class="fa fa-print"></i>', ['students/print-schedule', 'id' => $model->id,],['class' => 'btn btn-xs btn-dark float-right mr-1', 'target' => '_blank']);?>
-
-                            
                         </div>
                         <div class="card-body">
                             <table class="table table-bordered table-sm">
@@ -320,7 +368,9 @@ $this->params['breadcrumbs'][] = $this->title;
                                         <th>Instructor</th>
                                         <th class="text-center">Status</th>
                                         <th class="text-center">Grade</th>
+                                        <?php if($is_admin) : ?>
                                         <th class="text-center">Action</th>
+                                        <?php endif; ?>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -337,6 +387,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                         <td><?= $value->schedule->instructor->fullname ?></td>
                                         <td class="text-center"><?= ($value->status) ? $value->status : '-' ?></td>
                                         <td class="text-center"><?= $value->grade ? $value->grade : '-' ?></td>
+                                        <?php if($is_admin) : ?>
                                         <td class="text-center">
                                             <?php
                                                 echo Html::a('<i class="fa fa-edit"></i>', [
@@ -344,8 +395,24 @@ $this->params['breadcrumbs'][] = $this->title;
                                                 ],['class' => 'btn btn-xs btn-primary']);
                                             ?>
                                         </td>
+                                        <?php endif; ?>
                                     </tr>
                                     <?php $count1++; } ?>
+                                    <?php if(!$model->subjectEnrollment) : ?>
+                                    <tr>
+                                        <td>-</td>
+                                        <td>-</td>
+                                        <td>-</td>
+                                        <td>-</td>
+                                        <td>-</td>
+                                        <td>-</td>
+                                        <td>-</td>
+                                        <td>-</td>
+                                        <td class="text-center">-</td>
+                                        <td class="text-center">-</td>
+                                        <td class="text-center">-</td>
+                                    </tr>
+                                    <?php endif; ?>
                                 </tbody>
                             </table>
                             <div class="modal fade subject-modal" tabindex="-1" role="dialog" aria-labelledby="subjectModal" aria-hidden="true">

@@ -1,8 +1,8 @@
 <?php
 $this->title = 'Dashboard';
 $this->params['breadcrumbs'] = [['label' => $this->title]];
-$active_perc = ($active_students != 0) ? floatval((intval($students) / intval($active_students)) * 100) : 0;
-$enrollment_perc = ($active_enrollment != 0) ? floatval((intval($students) / intval($active_enrollment)) * 100) : 0;
+$active_perc = ($active_students != 0) ? floatval((intval($active_students) / intval($students)) * 100) : 0;
+$enrollment_perc = ($active_enrollment != 0) ? floatval((intval($active_enrollment) / intval($students)) * 100) : 0;
 ?>
 <div class="">
     <h5>Dashboard</h5>

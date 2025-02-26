@@ -53,10 +53,10 @@
                         'visible' => !Yii::$app->user->isGuest,
                         'items' => [
                             ['label' => 'Announcement',  'icon' => 'bullhorn', 'url' => ['/announcement/index'], 'visible' => !Yii::$app->user->isGuest],
-                            ['label' => 'Concerns',  'icon' => 'envelope-square', 'url' => ['/concern/index'], 'visible' => !Yii::$app->user->isGuest],
+                            ['label' => 'Concerns',  'icon' => 'question-circle', 'url' => ['/concern/index'], 'visible' => !Yii::$app->user->isGuest],
                             ['label' => 'Events',  'icon' => 'calendar-check', 'url' => ['/event/index'], 'visible' => !Yii::$app->user->isGuest],
                             [
-                                'label' => 'Module Managament',
+                                'label' => 'Module Management',
                                 'icon' => 'book',
                                 'visible' => !Yii::$app->user->isGuest,
                                 'items' => [
@@ -83,8 +83,16 @@
                 ],
             ]);
             }
-            else{
-
+            else if(!Yii::$app->user->isGuest){
+                $student_id = substr(Yii::$app->user->identity->username, 1);
+                echo \hail812\adminlte\widgets\Menu::widget([
+                    'items' => [
+                        ['label' => 'Home', 'url' => ['/'], 'icon' => 'home', 'visible' => !Yii::$app->user->isGuest],
+                        ['label' => 'Profile', 'url' => ['/students/view', 'id' => $student_id], 'icon' => 'graduation-cap', 'iconStyle' => 'fa', 'visible' => !Yii::$app->user->isGuest],  
+                        ['label' => 'Modules', 'iconStyle' => 'fa',  'icon' => 'book', 'url' => ['/module-list/student'], 'visible' => !Yii::$app->user->isGuest],
+                        ['label' => 'Concerns', 'iconStyle' => 'fa',  'icon' => 'question-circle', 'url' => ['/concern/submitted'], 'visible' => !Yii::$app->user->isGuest],
+                    ],
+                ]);
             }
             ?>
         </nav>

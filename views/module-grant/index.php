@@ -34,8 +34,8 @@ $this->params['breadcrumbs'][] = $this->title;
             ],
             // 'moduleList.subject.subject_name',
             'student_id',
-            'date_open:date',
-            'date_close:date',
+            // 'date_open:date',
+            // 'date_close:date',
             'is_requested',
             'is_approved',
             [
@@ -43,7 +43,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'urlCreator' => function ($action, ModuleGrant $model, $key, $index, $column) {
                     return Url::toRoute([$action, 'id' => $model->id]);
                 },
-                'template' => '{view} {update} | {delete}', // Customize which actions to show
+                'template' => '{approve} {view} {update} | {delete}', // Customize which actions to show
                 'buttons' => [
                     'view' => function ($url, $model) {
                         return Html::a('<span class="btn btn-info btn-xs"><b>VIEW</b></span>', $url, [
@@ -67,6 +67,17 @@ $this->params['breadcrumbs'][] = $this->title;
                             'data-method' => 'post',
                             'data-confirm' => 'Are you sure you want to delete this item?',
                         ]);
+                    },
+                    'approve' => function ($url, $model) {
+                        if($model->is_approved == 'No'){
+                            return Html::a('<span class="btn btn-primary btn-xs"><b>APPROVE</b></span>', $url, [
+                                'title' => 'Approve',
+                                'aria-label' => 'Approve',
+                                'data-pjax' => '0',
+                                'data-method' => 'post',
+                                'data-confirm' => 'Are you sure you want to approve this request?',
+                            ]);
+                        }
                     },
                 ],
             ],

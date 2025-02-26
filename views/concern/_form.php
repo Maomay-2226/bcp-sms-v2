@@ -13,13 +13,24 @@ use yii\widgets\ActiveForm;
         <div class="col-md-6">
             <?php $form = ActiveForm::begin(); ?>
 
-            <?= $form->field($model, 'student_id')->textInput() ?>
+            <div class="row">
+                <div class="col-md-4">
+                    <?= $form->field($model, 'student_id')->textInput() ?>
+                </div>
+                <div class="col-md-4">
+                    <?= $form->field($model, 'concern_type_id')->dropDownList($model->concernTypes, ['prompt' => 'Select Type']) ?>
+                </div>
+                <div class="col-md-4">
+                    <?= $form->field($model, 'date')->textInput([
+                        'type' => 'date',
+                        'placeholder' => 'Enter Date',
+                        'required' => true // Optional: Makes the field required
+                    ]) ?>
+                </div>
+            </div>
 
-            <?= $form->field($model, 'concern_type_id')->textInput() ?>
-
-            <?= $form->field($model, 'message')->textarea(['rows' => 6]) ?>
-
-            <?= $form->field($model, 'date')->textInput() ?>
+            <?= $form->field($model, 'message')->textarea(['rows' => 3]) ?>
+            <?= $form->field($model, 'answer')->textarea(['rows' => 3]) ?>
 
             <div class="form-group">
                 <?= Html::submitButton('Save', ['class' => 'btn btn-success']) ?>

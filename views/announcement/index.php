@@ -30,7 +30,10 @@ $this->params['breadcrumbs'][] = $this->title;
             ['class' => 'yii\grid\SerialColumn'],
 
             // 'id',
-            'announcement:ntext',
+            [
+                'attribute' => 'announcement',
+                'format' => 'raw',
+            ],
             'date_to_post',
             'date_to_expire',
             'type',
