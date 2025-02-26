@@ -42,6 +42,7 @@
                 'items' => [
                     ['label' => 'Login', 'url' => ['/user/login'], 'icon' => 'sign-in-alt', 'visible' => Yii::$app->user->isGuest],
                     // Student Registration
+                    ['label' => 'Home', 'url' => ['/'], 'icon' => 'home', 'visible' => !Yii::$app->user->isGuest],
                     ['label' => 'Student Registration', 'header' => true, 'visible' => !Yii::$app->user->isGuest],
                     ['label' => 'New Students', 'url' => ['/students/create'], 'icon' => 'user-plus', 'iconStyle' => 'fa', 'visible' => !Yii::$app->user->isGuest],
                     ['label' => 'Enrolled Students', 'url' => ['/students/index'], 'icon' => 'edit', 'iconStyle' => 'fa', 'visible' => !Yii::$app->user->isGuest],  
