@@ -73,8 +73,8 @@
                         'visible' => !Yii::$app->user->isGuest,
                         'items' => [
                             ['label' => 'Courses',  'icon' => 'briefcase', 'url' => ['/course/index'], 'visible' => !Yii::$app->user->isGuest],
-                            ['label' => 'Departments',  'icon' => 'building', 'url' => ['/departments/index'], 'visible' => !Yii::$app->user->isGuest],
                             ['label' => 'Instructor Profiling',  'icon' => 'user-circle', 'url' => ['/instructors/index'], 'visible' => !Yii::$app->user->isGuest],
+                            ['label' => 'Departments',  'icon' => 'building', 'url' => ['/departments/index'], 'visible' => !Yii::$app->user->isGuest],
                             ['label' => 'Majors',  'icon' => 'user-circle', 'url' => ['/majors/index'], 'visible' => !Yii::$app->user->isGuest],
                             ['label' => 'Sections',  'icon' => 'sitemap', 'url' => ['/sections/index'], 'visible' => !Yii::$app->user->isGuest],
                             ['label' => 'Subjects',  'icon' => 'book', 'url' => ['/subject/index'], 'visible' => !Yii::$app->user->isGuest],
