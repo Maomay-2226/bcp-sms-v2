@@ -124,6 +124,7 @@ class StudentsController extends Controller
     }
 
     public function actionAddSchedule($student_id, $subject_id, $academic_year, $semester, $schedule_id){
+        $if_passed = false;
         $check_enrollment = SubjectEnrollment::find()->where([
             'student_id'=>$student_id,
             'subject_id'=>$subject_id,
@@ -135,6 +136,17 @@ class StudentsController extends Controller
             Yii::$app->session->setFlash('warning', 'Schedule already exists.');
         }
         else{
+            $if_passed = SubjectEnrollment::find()->where([
+                'student_id'=>$student_id,
+                'subject_id'=>$subject_id,
+                'status'=>'Passed',
+            ])->exists();
+
+            if($if_passed){
+                Yii::$app->session->setFlash('warning', 'Cannot re-enroll same subject with PASSED remarks');
+                return $this->redirect(['view', 'id' => $student_id]);
+            }
+
             $model = new SubjectEnrollment;
             $model->student_id = $student_id;
             $model->subject_id = $subject_id;

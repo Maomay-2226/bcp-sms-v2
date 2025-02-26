@@ -40,7 +40,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         'attribute' => 'description',
                         'format' => 'raw',
                     ],
-                    'date',
+                    'date:date',
                 ],
             ]) ?>
         </div>

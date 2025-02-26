@@ -36,7 +36,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'attribute' => 'description',
                 'format' => 'raw',
             ],
-            'date',
+            'date:date',
             [
                 'class' => ActionColumn::className(),
                 'urlCreator' => function ($action, Event $model, $key, $index, $column) {

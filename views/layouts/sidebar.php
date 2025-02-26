@@ -44,9 +44,9 @@
                     // Student Registration
                     ['label' => 'Home', 'url' => ['/'], 'icon' => 'home', 'visible' => !Yii::$app->user->isGuest],
                     ['label' => 'Student Registration', 'header' => true, 'visible' => !Yii::$app->user->isGuest],
-                    ['label' => 'New Students', 'url' => ['/students/create'], 'icon' => 'user-plus', 'iconStyle' => 'fa', 'visible' => !Yii::$app->user->isGuest],
-                    ['label' => 'Enrolled Students', 'url' => ['/students/index'], 'icon' => 'edit', 'iconStyle' => 'fa', 'visible' => !Yii::$app->user->isGuest],  
+                    ['label' => 'New Student', 'url' => ['/students/create'], 'icon' => 'user-plus', 'iconStyle' => 'fa', 'visible' => !Yii::$app->user->isGuest],
                     ['label' => 'Schedules', 'iconStyle' => 'fa',  'icon' => 'calendar', 'url' => ['/schedule/index'], 'visible' => !Yii::$app->user->isGuest],
+                    ['label' => 'Enrolled Students', 'url' => ['/students/index'], 'icon' => 'edit', 'iconStyle' => 'fa', 'visible' => !Yii::$app->user->isGuest],  
                     ['label' => 'Support and Settings', 'header' => true, 'visible' => !Yii::$app->user->isGuest],
                     [
                         'label' => 'Student Support',

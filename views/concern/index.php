@@ -36,7 +36,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'value' => 'concernType.description',
             ],
             'message:ntext',
-            'date',
+            'date:date',
             [
                 'class' => ActionColumn::className(),
                 'urlCreator' => function ($action, Concern $model, $key, $index, $column) {

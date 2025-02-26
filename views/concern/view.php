@@ -36,7 +36,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'concernType.description',
                 'message:ntext',
                 'answer:ntext',
-                'date',
+                'date:date',
             ],
         ]) ?>
 

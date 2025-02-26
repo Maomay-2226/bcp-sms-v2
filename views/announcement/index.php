@@ -34,9 +34,18 @@ $this->params['breadcrumbs'][] = $this->title;
                 'attribute' => 'announcement',
                 'format' => 'raw',
             ],
-            'date_to_post',
-            'date_to_expire',
-            'type',
+            [
+                'attribute' => 'date_to_post',
+                'value' => function($model){
+                    return date('F d, Y h:i a', strtotime($model->date_to_post));
+                }
+            ],
+            [
+                'attribute' => 'date_to_expire',
+                'value' => function($model){
+                    return date('F d, Y h:i a', strtotime($model->date_to_expire));
+                }
+            ],
             [
                 'class' => ActionColumn::className(),
                 'urlCreator' => function ($action, Announcement $model, $key, $index, $column) {
